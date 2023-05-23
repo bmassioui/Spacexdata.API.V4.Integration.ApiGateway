@@ -1,4 +1,4 @@
-namespace Front.Web.ApiGateway.WebApi
+namespace ApiGateway.WebApi
 {
     public class WeatherForecast
     {
