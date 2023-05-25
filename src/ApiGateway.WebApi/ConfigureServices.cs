@@ -1,4 +1,5 @@
-﻿using ApiGateway.WebApi.Configurations;
+﻿using ApiGateway.WebApi.Availability;
+using ApiGateway.WebApi.Configurations;
 using ApiGateway.WebApi.Extensions;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -14,6 +15,9 @@ public static class ConfigureServices
         services
             .AddWeApiVersionning()
             .AddWebApiCorsConfigs(configuration);
+
+        services.AddHealthChecks()
+            .AddCheck<WebApiHealthCheck>("WebApiHealth");
 
         return services;
     }
