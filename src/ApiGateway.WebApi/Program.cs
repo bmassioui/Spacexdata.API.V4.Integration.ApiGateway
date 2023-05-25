@@ -1,11 +1,19 @@
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
-// Add services to the container.
+var builder = WebApplication.CreateBuilder(args);
+var webApiCorsPolicyName =
+    builder.Configuration.GetValue<string>("WebApiCorsConfig:PolicyName") ??
+    throw new ArgumentNullException("Cors configuration could not be found.");
+
+#region Add to the container.
+builder.Services.AddApplicationServices();
+builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddWebApiServices(builder.Configuration);
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddEndpointsApiExplorer();// To verify
 builder.Services.AddSwaggerGen();
+#endregion Add to the container.
 
 var app = builder.Build();
 
@@ -13,12 +21,25 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+
+        foreach (var desc in apiVersionDescriptionProvider.ApiVersionDescriptions)
+        {
+            options.SwaggerEndpoint($"../swagger/{desc.GroupName}/swagger.json", desc.ApiVersion.ToString());
+            options.DefaultModelsExpandDepth(-1);
+            options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
+        }
+    });
 }
 
+#region Middleware 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors(webApiCorsPolicyName);
+#endregion Middleware 
 
 app.MapControllers();
 

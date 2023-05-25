@@ -28,11 +28,13 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddWebApiCorsConfigs(this IServiceCollection services, IConfiguration configuration)
     {
-        var corsPolicyName = configuration.GetValue<string>("WebApiCorsConfig:PolicyName") ?? "_showroomResultsAllowSpecificOriginsPolicyName";
-
+        var webApiCorsPolicyName = 
+            configuration.GetValue<string>("WebApiCorsConfig:PolicyName") ??
+            throw new ArgumentNullException("Cors configuration could not be found.");
+        
         services.AddCors(options =>
         {
-            options.AddPolicy(name: corsPolicyName,
+            options.AddPolicy(name: webApiCorsPolicyName,
                               policy =>
                               {
                                   policy.AllowAnyOrigin() // To limit later
