@@ -12,4 +12,14 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\Behaviours\" />
+    <Folder Include="Common\Interfaces\" />
+    <Folder Include="Common\Models\" />
+    <Folder Include="Features\Launches\Past\Queries\GetPastLaunchesWithPagination\" />
+    <Folder Include="Features\Launches\Past\Queries\GetPastLaunchById\" />
+    <Folder Include="Features\Launches\Upcoming\Queries\GetUpcomingLaunchById\" />
+    <Folder Include="Features\Launches\Upcoming\Queries\GetUpcomingLaunchesWithPagination\" />
+  </ItemGroup>
+
 </Project>

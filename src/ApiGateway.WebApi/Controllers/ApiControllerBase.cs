@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ApiGateway.WebApi.Controllers;
 
@@ -7,4 +8,8 @@ namespace ApiGateway.WebApi.Controllers;
 [Produces("application/json")]
 [ApiVersion("4.0")]
 public abstract class ApiControllerBase : ControllerBase
-{ }
+{
+    private ISender _mediator = null!;
+
+    protected ISender Mediator => _mediator ??= HttpContext.RequestServices.GetRequiredService<ISender>();
+}
