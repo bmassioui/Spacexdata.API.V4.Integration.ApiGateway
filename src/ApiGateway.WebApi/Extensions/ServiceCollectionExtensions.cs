@@ -28,10 +28,10 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddWebApiCorsConfigs(this IServiceCollection services, IConfiguration configuration)
     {
-        var webApiCorsPolicyName = 
-            configuration.GetValue<string>("WebApiCorsConfig:PolicyName") ??
-            throw new ArgumentNullException("Cors configuration could not be found.");
-        
+        var webApiCorsPolicyName =
+            configuration.GetValue<string>(Constants.WebApiCorsPolicyNameConfigurationKey) ??
+            throw new ArgumentNullException(Constants.WebApiCorsPolicyNameConfigurationKeyNotFoundExceptionMessage);
+
         services.AddCors(options =>
         {
             options.AddPolicy(name: webApiCorsPolicyName,

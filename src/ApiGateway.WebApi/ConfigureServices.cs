@@ -3,8 +3,10 @@ using ApiGateway.WebApi.Configurations;
 using ApiGateway.WebApi.Extensions;
 using ApiGateway.WebApi.Filters;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Threading.RateLimiting;
 
 namespace ApiGateway.WebApi;
 
@@ -20,7 +22,7 @@ public static class ConfigureServices
 
         services
             .AddHealthChecks()
-            .AddCheck<WebApiHealthCheck>("WebApiHealth");
+            .AddCheck<WebApiHealthCheck>(Constants.HealthCheckName);
 
         services
             .AddControllers(options => options.Filters.Add<ApiExceptionFilterAttribute>());
@@ -33,6 +35,27 @@ public static class ConfigureServices
         {
             options.DefaultExpirationTimeSpan = TimeSpan.FromSeconds(10);
         });
+
+        services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            options.OnRejected = async (context, cancellationToken) =>
+            {
+                var hostName = context.HttpContext.Request.Headers.Host.ToString();
+
+                var message = $"{Constants.FixedWindowLimiterForRejectedRequest} {hostName}";
+
+                await context.HttpContext.Response.WriteAsync(message, cancellationToken);
+            };
+            options.AddFixedWindowLimiter(policyName: Constants.FixedWindowLimiterPolicyName, options =>
+            {
+                options.Window = TimeSpan.FromSeconds(5);
+                options.PermitLimit = 5;
+                options.QueueLimit = 10;
+                options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+            });
+        }
+      );
 
         return services;
     }

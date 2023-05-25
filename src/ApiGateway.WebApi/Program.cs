@@ -5,8 +5,8 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 var webApiCorsPolicyName =
-    builder.Configuration.GetValue<string>("WebApiCorsConfig:PolicyName") ??
-    throw new ArgumentNullException("Cors configuration could not be found.");
+    builder.Configuration.GetValue<string>(Constants.WebApiCorsPolicyNameConfigurationKey) ??
+    throw new ArgumentNullException(Constants.WebApiCorsPolicyNameConfigurationKeyNotFoundExceptionMessage);
 
 #region Add to the container.
 builder.Services.AddApplicationServices();
@@ -42,10 +42,11 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseCors(webApiCorsPolicyName);
+app.UseRateLimiter();
 #endregion Middleware 
 
 app.MapControllers();
-app.MapHealthChecks("/ApiGatewayWebApiHealth", new HealthCheckOptions
+app.MapHealthChecks(Constants.MapHealthChecksPattern, new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
     AllowCachingResponses = true,
