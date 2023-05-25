@@ -1,6 +1,8 @@
 ﻿using ApiGateway.WebApi.Availability;
 using ApiGateway.WebApi.Configurations;
 using ApiGateway.WebApi.Extensions;
+using ApiGateway.WebApi.Filters;
+using FluentValidation.AspNetCore;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -16,8 +18,15 @@ public static class ConfigureServices
             .AddWeApiVersionning()
             .AddWebApiCorsConfigs(configuration);
 
-        services.AddHealthChecks()
+        services
+            .AddHealthChecks()
             .AddCheck<WebApiHealthCheck>("WebApiHealth");
+
+        services
+            .AddControllers(options => options.Filters.Add<ApiExceptionFilterAttribute>());
+
+        services
+            .AddFluentValidationClientsideAdapters();
 
         return services;
     }
