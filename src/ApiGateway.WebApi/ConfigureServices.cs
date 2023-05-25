@@ -28,6 +28,12 @@ public static class ConfigureServices
         services
             .AddFluentValidationClientsideAdapters();
 
+        services
+            .AddOutputCache(options =>
+        {
+            options.DefaultExpirationTimeSpan = TimeSpan.FromSeconds(10);
+        });
+
         return services;
     }
 }
