@@ -8,7 +8,7 @@ public class WebApiHealthCheck : IHealthCheck
 
     public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
-        var responseTime = _random.Next(1, 300);
+        int responseTime = _random.Next(1, 300);
 
         return responseTime switch
         {

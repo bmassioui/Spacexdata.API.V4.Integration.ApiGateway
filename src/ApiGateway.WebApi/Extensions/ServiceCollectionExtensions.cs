@@ -8,9 +8,9 @@ public static class ServiceCollectionExtensions
     {
         services.AddApiVersioning(opt =>
         {
-            opt.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+            opt.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(4, 0);
             opt.AssumeDefaultVersionWhenUnspecified = true;
-            opt.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+            opt.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(4, 0);
             opt.ReportApiVersions = true;
             opt.ApiVersionReader = ApiVersionReader.Combine(new UrlSegmentApiVersionReader(),
                                                             new HeaderApiVersionReader("x-api-version"),
@@ -28,9 +28,9 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddWebApiCorsConfigs(this IServiceCollection services, IConfiguration configuration)
     {
-        var webApiCorsPolicyName =
-            configuration.GetValue<string>(Constants.WebApiCorsPolicyNameConfigurationKey) ??
-            throw new ArgumentNullException(Constants.WebApiCorsPolicyNameConfigurationKeyNotFoundExceptionMessage);
+        string? webApiCorsPolicyName = configuration.GetValue<string>(Constants.WebApiCorsPolicyNameConfigurationKey);
+
+        ArgumentNullException.ThrowIfNull(webApiCorsPolicyName);
 
         services.AddCors(options =>
         {

@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
-var webApiCorsPolicyName =
-    builder.Configuration.GetValue<string>(Constants.WebApiCorsPolicyNameConfigurationKey) ??
-    throw new ArgumentNullException(Constants.WebApiCorsPolicyNameConfigurationKeyNotFoundExceptionMessage);
+
+string? webApiCorsPolicyName = builder.Configuration.GetValue<string>(Constants.WebApiCorsPolicyNameConfigurationKey);
+ArgumentNullException.ThrowIfNull(webApiCorsPolicyName);
 
 #region Add to the container.
 builder.Services.AddApplicationServices();
@@ -14,7 +14,6 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddWebApiServices(builder.Configuration);
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();// To verify
 builder.Services.AddSwaggerGen();
 #endregion Add to the container.
 

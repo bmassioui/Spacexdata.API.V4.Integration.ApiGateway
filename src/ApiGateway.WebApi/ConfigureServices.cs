@@ -55,7 +55,7 @@ public static class ConfigureServices
                 options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
             });
         }
-      );
+        );
 
         return services;
     }
