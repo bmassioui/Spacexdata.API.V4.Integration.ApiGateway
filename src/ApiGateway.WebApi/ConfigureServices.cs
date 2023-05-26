@@ -6,10 +6,12 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.RateLimiting;
 
 namespace ApiGateway.WebApi;
 
+[ExcludeFromCodeCoverage]
 public static class ConfigureServices
 {
     public static IServiceCollection AddWebApiServices(this IServiceCollection services, IConfiguration configuration)
