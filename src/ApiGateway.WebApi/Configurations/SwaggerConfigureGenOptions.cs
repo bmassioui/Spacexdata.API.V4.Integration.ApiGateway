@@ -25,8 +25,8 @@ public class SwaggerConfigureGenOptions : IConfigureOptions<SwaggerGenOptions>
         {
             options.SwaggerDoc(desc.GroupName, new OpenApiInfo
             {
-                Title = $"Spacexdata.API.V4.Integration.ApiGateway {desc.ApiVersion}",
-                Description = "Spacexdata Api v4 integration ApiGateway",
+                Title = $"Spacexdata.API.Integration.ApiGateway {desc.ApiVersion}",
+                Description = "Spacexdata Api integration ApiGateway",
                 Version = desc.ApiVersion.ToString(),
                 Contact = new OpenApiContact
                 {
