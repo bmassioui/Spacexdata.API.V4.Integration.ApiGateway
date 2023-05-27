@@ -19,7 +19,7 @@ public sealed class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipeline
         {
             var requestName = typeof(TRequest).Name;
 
-            _logger.LogError(exception, "{@LogAt} - Unhandled Exception for Request: {@Name} {@Request}", DateTime.UtcNow, requestName, request);
+            _logger.LogError(exception, "Unhandled Exception for Request: {@Name}, {@Request}, {@LogAt}", DateTime.UtcNow, requestName, request);
 
             throw;
         }

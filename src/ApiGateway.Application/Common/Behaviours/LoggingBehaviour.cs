@@ -13,11 +13,11 @@ public sealed class LoggingBehaviour<TRequest, TResponse> : IPipelineBehavior<TR
     {
         var requestName = typeof(TRequest).Name;
 
-        _logger.LogInformation("{@LogAt} - Starting request: {@Name} {@Request}", DateTime.UtcNow, requestName, request);
+        _logger.LogInformation("Starting request: {@Name}, {@Request}, {@LogAt}", requestName, request, DateTime.UtcNow);
 
         var result = await next();
 
-        _logger.LogInformation("{@LogAt} - Completed request: {@Name} {@Request}", DateTime.UtcNow, requestName, request);
+        _logger.LogInformation("Completed request: {@Name}, {@Request}, {@LogAt}", DateTime.UtcNow, requestName, request);
 
         return result;
     }
