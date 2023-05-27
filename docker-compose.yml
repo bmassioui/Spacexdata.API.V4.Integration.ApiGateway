@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  apigateway.webapi:
+    image: ${DOCKER_REGISTRY-}apigatewaywebapi
+    build:
+      context: .
+      dockerfile: src/ApiGateway.WebApi/Dockerfile
