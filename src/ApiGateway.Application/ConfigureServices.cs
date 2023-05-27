@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿using ApiGateway.Application.Common.Behaviours;
+using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
@@ -15,6 +17,18 @@ public static class ConfigureServices
 
         services
             .AddMediatR(mediatRServiceConfiguration => mediatRServiceConfiguration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
+        services
+            .AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
+
+        services
+            .AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
+
+        services
+            .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+
+        services
+            .AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
 
         return services;
     }

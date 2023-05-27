@@ -17,6 +17,8 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 #endregion Add to the container.
 
+builder.Host.ConfigureLogger();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
