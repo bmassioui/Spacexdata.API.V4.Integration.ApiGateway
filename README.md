@@ -1,4 +1,7 @@
 # Spacexdata.API.V4.Integration.ApiGateway
+<div style="text-align:center">
+    <img alt="Project banner" src="./documentation/banner.png" />
+</div>
 
 ## About
 This project is a Gateway REST API built using .NET 7 and follows the principles of Clean Architecture introduced by by [Robert C. Martin (Uncle Bob)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html). The API Gateway serves as an entry point to various backend services which is in fact [SpaceX REST API V4](https://api.spacexdata.com/latest) in order to provide a unified API for client applications. The project implements a modular and decoupled architecture, allowing for easy maintenance, scalability, and testability.
