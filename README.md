@@ -29,24 +29,38 @@ This project follows the Clean Architecture principles by organizing the codebas
 - [Docker](https://www.docker.com/products/docker-desktop)
 
 ### Running Locally using dotnet CLI
-1. Clone the repository: `git clone https://github.com/your/repository.git`
-2. Navigate to the project directory: `cd project-directory`
-3. Restore the project dependencies: `dotnet restore`
-4. Build the project: `dotnet build`
-5. Run the application: `dotnet run`
+1. Clone the repository: `https://github.com/bmassioui/Spacexdata.API.V4.Integration.ApiGateway.git`
+2. Ensure usign `master` branch
+3. Navigate to the project directory: `cd Spacexdata.API.V4.Integration.ApiGateway`
+4. Restore the project dependencies: `dotnet restore`
+5. Build the project: `dotnet build`
+6. Run the application: `dotnet run`
 
 The application will start and be accessible at `http://localhost:5000` or `https://localhost:5001`.
 
+### Health check
+Check the Api Gateway WebApi health at `https://localhost:5001/ApiGatewayWebApiHealth` for *debug mode* or via docker by running the following command `HEALTHCHECK CMD curl --fail http://localhost:5000/ApiGatewayWebApiHealth || exit`
+
 ### Running with Docker
-1. Clone the repository: `git clone https://github.com/your/repository.git`
-2. Navigate to the project directory: `cd project-directory`
-3. Build the Docker image: `docker build -t project-name .`
-4. Run the Docker container: `docker run -d -p 5000:80 project-name`
+1. Generate *https* *dev* certificate `dotnet dev-certs https -ep $env:USERPROFILE/.aspnet/https/ApiGateway.WebApi.pfx -p YourPassword`
+2. Trust the certificate `dotnet dev-certs https --trust`
+3. Set dotnet user-secret for *Kestrel:Certificates:Development:Password* for *piGateway.WebApi* project  `dotnet user-secrets -p ./src/ApiGateway.WebApi/ApiGateway.WebApi.csproj set "Kestrel:Certificates:Development:Password" "YourPassword"`
+4. Clone the repository: `https://github.com/bmassioui/Spacexdata.API.V4.Integration.ApiGateway.git`
+5. Ensure usign `master` branch4. 
+6. Navigate to the project directory: `cd Spacexdata.API.V4.Integration.ApiGateway`
+7. Run the Docker container: `docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d`
+8. The application will start and be accessible at `https://localhost:5001`
+9. Portainer Ui for Docker management at `http://localhost:8001/`
 
 The application will start inside a Docker container and be accessible at `http://localhost:5000`.
 
 ## API Documentation
 Once the application is running, you can access the API documentation at `http://localhost:5000/swagger` to explore the available endpoints and interact with the Gateway REST API.
+
+### Useful commands
+- `docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d`
+- `docker-compose down`
+- `docker rmi -f $(docker images -a -q)`
 
 ### Warm thanks
 * [Robert C. Martin (Uncle Bob) Clean Architecture Blog](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
@@ -57,3 +71,4 @@ Once the application is running, you can access the API documentation at `http:/
 * [Clean Architecture by ezzylearning](https://www.ezzylearning.net/tutorial/a-guide-for-building-software-with-clean-architecture)
 * [.NET Domain Events Using MediatR](https://wrapt.dev/blog/dotnet-domain-events)
 * [Anaemic Domain Model vs. Rich Domain Model](https://dev.to/crovitz/have-you-anemic-or-rich-domain-model-2ala)
+* [Self-Signed certificate](https://learn.microsoft.com/en-us/dotnet/core/additional-tools/self-signed-certificates-guide#with-dotnet-dev-certs)

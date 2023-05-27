@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+  apigateway.webapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - "WebApiCorsConfig:PolicyName=_SpacexdataApiV4IntegrationApiGatewayAllowSpecificOriginsPolicyName"
+      - "FrontendApp:FrontendWebBaseUrl="
+      - "SpaceXWebApi:BaseUrl=https://api.spacexdata.com/v4/"
+      - "JwtToken:secret=35788035eb4909d2439fca6a85632a62f6c4ac4f9825d1ca0ebd4ea3e8506eb9"
+      - "JwtToken:issuer=https://massioui.vercel.app/"
+      - "JwtToken:audience=Bouchaib MASSIOUI"
+      - "JwtToken:expiry=2"
+      - "JwtToken:refreshExpiry=10080"
+    ports:
+      - "5000:80"
+      - "5001:443"
+    volumes:
+      - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
+      - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/ 
+  
+  portainer:
+    container_name: portainer
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "8000:8000"
+      - "8001:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
