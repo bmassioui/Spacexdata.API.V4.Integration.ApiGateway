@@ -26,7 +26,7 @@ public sealed class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavio
 
         var requestName = typeof(TRequest).Name;
 
-        _logger.LogWarning("Web Api gateway performance status: Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@Request}", requestName, elapsedMilliseconds, request);
+        _logger.LogWarning("{@LogAt} - Performance status: Long Running Request: {@Name} ({@ElapsedMilliseconds} milliseconds) {@Request}", DateTime.UtcNow, requestName, elapsedMilliseconds, request);
 
         return response;
     }

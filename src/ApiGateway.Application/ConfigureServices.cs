@@ -19,6 +19,9 @@ public static class ConfigureServices
             .AddMediatR(mediatRServiceConfiguration => mediatRServiceConfiguration.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
         services
+            .AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
+
+        services
             .AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
 
         services
