@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 
 namespace ApiGateway.WebApi.Controllers;
 
@@ -9,6 +10,7 @@ public class LaunchesController : ApiControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet(Name = "/", Order = 0)]
+    [OutputCache]
     public IActionResult GetPastLaunches()
     {
         return Ok();
@@ -19,6 +21,7 @@ public class LaunchesController : ApiControllerBase
     /// </summary>
     /// <returns></returns>
     //[HttpGet(Name = "/{id:string}", Order = 1)]
+    //[OutputCache]
     //public IActionResult GetPastLaunchById()
     //{
     //    return Ok();
@@ -29,6 +32,7 @@ public class LaunchesController : ApiControllerBase
     /// </summary>
     /// <returns></returns>
     //[HttpGet(Name = "/Upcoming", Order = 2)]
+    //[OutputCache]
     //public IActionResult GetUpcomingLaunches()
     //{
     //    return Ok();
@@ -39,6 +43,7 @@ public class LaunchesController : ApiControllerBase
     /// </summary>
     /// <returns></returns>
     //[HttpGet(Name = "/Upcoming/{id:string}", Order = 3)]
+    //[OutputCache]
     //public IActionResult GetUpcomingLaunchesById()
     //{
     //    return Ok();

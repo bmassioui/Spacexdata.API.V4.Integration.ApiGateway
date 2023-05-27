@@ -37,6 +37,9 @@ This project follows the Clean Architecture principles by organizing the codebas
 
 The application will start and be accessible at `http://localhost:5000` or `https://localhost:5001`.
 
+### Health check
+Check the Api Gateway WebApi health at `https://localhost:5001/ApiGatewayWebApiHealth` for *debug mode* or via docker by running the following command `HEALTHCHECK CMD curl --fail http://localhost:5000/ApiGatewayWebApiHealth || exit`
+
 ### Running with Docker
 1. Clone the repository: `git clone https://github.com/your/repository.git`
 2. Navigate to the project directory: `cd project-directory`
