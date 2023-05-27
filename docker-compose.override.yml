@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.9'
 
 services:
   apigateway.webapi:
@@ -14,8 +14,20 @@ services:
       - "JwtToken:expiry=2"
       - "JwtToken:refreshExpiry=10080"
     ports:
-      - "8000:80"
-      - "8001:443"
+      - "5000:80"
+      - "5001:443"
     volumes:
       - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
       - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/ 
+  
+  portainer:
+    container_name: portainer
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "8000:8000"
+      - "8001:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data

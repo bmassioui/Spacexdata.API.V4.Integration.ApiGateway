@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.9'
 
 services:
   apigateway.webapi:
@@ -6,3 +6,9 @@ services:
     build:
       context: .
       dockerfile: src/ApiGateway.WebApi/Dockerfile
+
+  portainer:
+    image: portainer/portainer-ce:latest
+
+volumes:
+  portainer_data: null
