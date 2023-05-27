@@ -5,6 +5,10 @@ namespace ApiGateway.WebApi.Controllers;
 
 public class LaunchesController : ApiControllerBase
 {
+    private readonly ILogger<LaunchesController> _logger;
+
+    public LaunchesController(ILogger<LaunchesController> logger) => _logger = logger;
+
     /// <summary>
     /// Past launches
     /// </summary>
@@ -13,7 +17,20 @@ public class LaunchesController : ApiControllerBase
     [OutputCache]
     public IActionResult GetPastLaunches()
     {
-        return Ok();
+        _logger.LogInformation("Starting request:{@EndPointName}", nameof(GetPastLaunches));
+
+        var employees = new List<Employee>
+        {
+            new Employee { Name = "John Doe", Age = 30, Department = "Engineering" },
+            new Employee { Name = "Jane Smith", Age = 35, Department = "Marketing" },
+            new Employee { Name = "Mike Johnson", Age = 28, Department = "Sales" },
+            new Employee { Name = "Emily Brown", Age = 32, Department = "HR" },
+            new Employee { Name = "David Wilson", Age = 40, Department = "Finance" }
+        };
+
+        _logger.LogInformation("Completed request:{@EndPointName}", nameof(GetPastLaunches));
+
+        return Ok(employees);
     }
 
     /// <summary>
@@ -48,4 +65,14 @@ public class LaunchesController : ApiControllerBase
     //{
     //    return Ok();
     //}
+}
+
+/// <summary>
+/// TOD: to remove later, just for test purpose
+/// </summary>
+public class Employee
+{
+    public string? Name { get; set; }
+    public int Age { get; set; }
+    public string? Department { get; set; }
 }

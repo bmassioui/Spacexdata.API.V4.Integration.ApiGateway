@@ -1,4 +1,7 @@
 # Spacexdata.API.V4.Integration.ApiGateway
+<div style="text-align:center">
+    <img alt="Project banner" src="./documentation/banner.png" />
+</div>
 
 ## About
 This project is a Gateway REST API built using .NET 7 and follows the principles of Clean Architecture introduced by by [Robert C. Martin (Uncle Bob)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html). The API Gateway serves as an entry point to various backend services which is in fact [SpaceX REST API V4](https://api.spacexdata.com/latest) in order to provide a unified API for client applications. The project implements a modular and decoupled architecture, allowing for easy maintenance, scalability, and testability.
@@ -30,7 +33,7 @@ This project follows the Clean Architecture principles by organizing the codebas
 
 ### Running Locally using dotnet CLI
 1. Clone the repository: `https://github.com/bmassioui/Spacexdata.API.V4.Integration.ApiGateway.git`
-2. Ensure usign `master` branch
+2. Ensure usign `main` branch
 3. Navigate to the project directory: `cd Spacexdata.API.V4.Integration.ApiGateway`
 4. Restore the project dependencies: `dotnet restore`
 5. Build the project: `dotnet build`
@@ -46,7 +49,7 @@ Check the Api Gateway WebApi health at `https://localhost:5001/ApiGatewayWebApiH
 2. Trust the certificate `dotnet dev-certs https --trust`
 3. Set dotnet user-secret for *Kestrel:Certificates:Development:Password* for *piGateway.WebApi* project  `dotnet user-secrets -p ./src/ApiGateway.WebApi/ApiGateway.WebApi.csproj set "Kestrel:Certificates:Development:Password" "YourPassword"`
 4. Clone the repository: `https://github.com/bmassioui/Spacexdata.API.V4.Integration.ApiGateway.git`
-5. Ensure usign `master` branch4. 
+5. Ensure usign `main` branch4. 
 6. Navigate to the project directory: `cd Spacexdata.API.V4.Integration.ApiGateway`
 7. Run the Docker container: `docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d`
 8. The application will start and be accessible at `https://localhost:5001`
