@@ -9,15 +9,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{5B33F028
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway.WebApi", "src\ApiGateway.WebApi\ApiGateway.WebApi.csproj", "{C3B7F973-D86E-4BA3-82EE-6D0CECB2D282}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway.Infrastructure", "src\ApiGateway.Infrastructure\ApiGateway.Infrastructure.csproj", "{AECE938E-9B6E-4E11-8347-72B4E8E76430}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway.Infrastructure", "src\ApiGateway.Infrastructure\ApiGateway.Infrastructure.csproj", "{AECE938E-9B6E-4E11-8347-72B4E8E76430}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway.Application", "src\ApiGateway.Application\ApiGateway.Application.csproj", "{AF8EDE26-A247-44C2-9BFE-6DEB7E778DE6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway.Application", "src\ApiGateway.Application\ApiGateway.Application.csproj", "{AF8EDE26-A247-44C2-9BFE-6DEB7E778DE6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{2062EE90-69CA-450C-A0C5-9FB6F9BC9D80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway.Infrastructure.UnitTests", "tests\UnitTests\ApiGateway.Infrastructure.UnitTests\ApiGateway.Infrastructure.UnitTests.csproj", "{7706A5F2-5522-4BBC-A6DA-CCB518E44DB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway.Infrastructure.UnitTests", "tests\UnitTests\ApiGateway.Infrastructure.UnitTests\ApiGateway.Infrastructure.UnitTests.csproj", "{7706A5F2-5522-4BBC-A6DA-CCB518E44DB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway.Application.UnitTests", "tests\UnitTests\ApiGateway.Application.UnitTests\ApiGateway.Application.UnitTests.csproj", "{8F8F20DE-0256-47DA-B311-A7EB488749AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway.Application.UnitTests", "tests\UnitTests\ApiGateway.Application.UnitTests\ApiGateway.Application.UnitTests.csproj", "{8F8F20DE-0256-47DA-B311-A7EB488749AC}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{49E908E5-C823-413C-8081-9D1C08401073}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{8F8F20DE-0256-47DA-B311-A7EB488749AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F8F20DE-0256-47DA-B311-A7EB488749AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F8F20DE-0256-47DA-B311-A7EB488749AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49E908E5-C823-413C-8081-9D1C08401073}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49E908E5-C823-413C-8081-9D1C08401073}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49E908E5-C823-413C-8081-9D1C08401073}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49E908E5-C823-413C-8081-9D1C08401073}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
