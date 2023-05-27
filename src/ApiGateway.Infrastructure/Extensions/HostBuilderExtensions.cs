@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using ApiGateway.Infrastructure.Common;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using Serilog.Sinks.Elasticsearch;
 using System.Diagnostics.CodeAnalysis;
 
 namespace ApiGateway.Infrastructure.Extensions;
@@ -20,18 +22,47 @@ public static class HostBuilderExtensions
             .AddJsonFile($"appsettings.{environment}.json", optional: true)
             .Build();
 
-        SetLogger(configurationBuilder);
+        SetLogger(configurationBuilder, environment);
 
         return builder.UseSerilog();
+    }
 
-        static void SetLogger(IConfigurationRoot? configuration)
+    private static void SetLogger(IConfigurationRoot? configuration, string environment)
+    {
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        Log.Logger =
+            new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .Enrich.FromLogContext()
+            .Enrich.WithMachineName()
+            .Enrich.WithEnvironmentName()
+            .Enrich.WithThreadId()
+            .Enrich.WithThreadId()
+            .Enrich.WithProcessId()
+            .Enrich.WithProcessName()
+            .Enrich.WithProperty("Environment", environment)
+            .WriteTo.Console()
+            .WriteTo.Debug()
+            .WriteTo.Elasticsearch(CreateElasticsearchSinkOptions(configuration))
+            .ReadFrom.Configuration(configuration)
+            .CreateLogger();
+    }
+
+    private static ElasticsearchSinkOptions CreateElasticsearchSinkOptions(IConfigurationRoot? configuration)
+    {
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        string? nodeUri = configuration[Constants.ElasticsearchNodeUriConfigurationKey];
+
+        ArgumentException.ThrowIfNullOrEmpty(nodeUri);
+
+        return new ElasticsearchSinkOptions(new Uri(nodeUri))
         {
-            ArgumentNullException.ThrowIfNull(configuration);
-
-            Log.Logger =
-                new LoggerConfiguration()
-                .ReadFrom.Configuration(configuration)
-                .CreateLogger();
-        }
+            AutoRegisterTemplate = true,
+            AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv8,
+            NumberOfReplicas = 5,
+            IndexFormat = Constants.ElasticsearchIndexFormat,
+        };
     }
 }
