@@ -1,6 +1,41 @@
 version: '3.9'
 
 services:
+  portainer:
+    container_name: portainer
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "8000:8000"
+      - "8001:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+  elasticsearch:
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    networks:
+        - elasticsearch_net
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+
+  kibana:
+    container_name: kibana
+    networks:
+        - elasticsearch_net
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+
   apigateway.webapi:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -19,15 +54,3 @@ services:
     volumes:
       - ${APPDATA}\microsoft\UserSecrets\:/root/.microsoft/usersecrets
       - ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/ 
-  
-  portainer:
-    container_name: portainer
-    restart: always
-    security_opt:
-      - no-new-privileges:true
-    ports:
-      - "8000:8000"
-      - "8001:9000"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
