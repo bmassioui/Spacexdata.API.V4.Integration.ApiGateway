@@ -67,8 +67,8 @@ Once the application is running, you can access the API documentation at `http:/
 - `docker rmi -f $(docker images -a -q)`
 
 ### Postman for Backend (SpaceX API V4)
-- [Postman environment](./documentation/materials/SpaceX%20API%20V4.postman_environment.json)
-- [Postman collection V2.1](./documentation/materials/SpaceX%20API%20V4.postman_collection.json)
+- [Postman environment](./documentation/materials/Backend-SpaceX/SpaceX%20API%20V4.postman_environment.json)
+- [Postman collection V2.1](./documentation/materials/Backend-SpaceX/SpaceX%20API%20V4.postman_collection.json)
 
 ### Warm thanks
 * [Robert C. Martin (Uncle Bob) Clean Architecture Blog](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
