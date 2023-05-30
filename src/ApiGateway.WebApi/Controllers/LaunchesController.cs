@@ -1,6 +1,7 @@
 ﻿using ApiGateway.Application.Features.Launches.Past.Queries.GetPastLaunchesWithPagination;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
+using System.ComponentModel.DataAnnotations;
 
 namespace ApiGateway.WebApi.Controllers;
 
@@ -19,7 +20,7 @@ public class LaunchesController : ApiControllerBase
     [OutputCache]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<IReadOnlyList<PastLaunchesDto>>> GetPastLaunches(ushort offset, ushort limit, string? sort) =>
+    public async Task<ActionResult<PastLaunchesDto>> GetPastLaunches([Required]ushort offset, [Required]ushort limit, string? sort) =>
         Ok(await Mediator.Send(new GetPastLaunchesWithPaginationQuery()));
 
     /// <summary>

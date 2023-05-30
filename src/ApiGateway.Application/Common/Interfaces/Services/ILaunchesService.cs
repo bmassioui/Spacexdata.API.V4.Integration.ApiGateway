@@ -8,5 +8,5 @@ public interface ILaunchesService
     /// Get past launches - Async
     /// </summary>
     /// <returns>Readonly list of past launches</returns>
-    Task<IReadOnlyList<PastLaunchesDto>> GetPastLaunchchesAsync(CancellationToken cancellationToken = default);
+    Task<PastLaunchesDto?> GetPastLaunchchesAsync(CancellationToken cancellationToken = default);
 }

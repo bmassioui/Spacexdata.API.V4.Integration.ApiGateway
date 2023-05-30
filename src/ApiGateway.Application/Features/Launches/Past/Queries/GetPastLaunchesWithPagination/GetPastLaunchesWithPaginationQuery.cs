@@ -3,19 +3,19 @@ using MediatR;
 
 namespace ApiGateway.Application.Features.Launches.Past.Queries.GetPastLaunchesWithPagination;
 
-public record class GetPastLaunchesWithPaginationQuery: IRequest<IReadOnlyList<PastLaunchesDto>>{}
+public record class GetPastLaunchesWithPaginationQuery : IRequest<PastLaunchesDto> { }
 
-public sealed class GetPastLaunchesWithPaginationQueryHandler : IRequestHandler<GetPastLaunchesWithPaginationQuery, IReadOnlyList<PastLaunchesDto>>
+public sealed class GetPastLaunchesWithPaginationQueryHandler : IRequestHandler<GetPastLaunchesWithPaginationQuery, PastLaunchesDto>
 {
     private readonly ILaunchesService _launchesService;
 
     public GetPastLaunchesWithPaginationQueryHandler(ILaunchesService launchesService) => _launchesService = launchesService;
 
-    public async Task<IReadOnlyList<PastLaunchesDto>> Handle(GetPastLaunchesWithPaginationQuery request, CancellationToken cancellationToken)
+    public async Task<PastLaunchesDto> Handle(GetPastLaunchesWithPaginationQuery request, CancellationToken cancellationToken)
     {
-        IReadOnlyList<PastLaunchesDto> pastLaunchesDtos =
+        PastLaunchesDto? pastLaunchesDto =
             await _launchesService.GetPastLaunchchesAsync(cancellationToken);
 
-        return pastLaunchesDtos;
+        return pastLaunchesDto ?? new();
     }
 }
