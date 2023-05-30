@@ -1,11 +1,12 @@
 ﻿using ApiGateway.Application.Common.Interfaces.Services;
 using ApiGateway.Application.Features.Launches.Past.Queries.GetPastLaunchesWithPagination;
 using ApiGateway.Infrastructure.Common;
-using Microsoft.Extensions.Options;
-using System.Net.Http.Json;
-using Newtonsoft.Json;
 using ApiGateway.Infrastructure.ExternalResources.Models;
 using ApiGateway.Infrastructure.Options;
+using AutoMapper;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using System.Net.Http.Json;
 
 namespace ApiGateway.Infrastructure.ExternalResources.Services;
 
@@ -13,17 +14,21 @@ public sealed class LaunchesService : ILaunchesService
 {
     private readonly HttpClient _httpClient;
     private readonly SpaceXWebApiOptions _spaceXWebApiOptions;
+    private readonly IMapper _mapper;
 
-
-    public LaunchesService(IHttpClientFactory httpClientFactory, IOptions<SpaceXWebApiOptions> spaceXWebApiOptions)
+    public LaunchesService(
+        IHttpClientFactory httpClientFactory, 
+        IOptions<SpaceXWebApiOptions> spaceXWebApiOptions, 
+        IMapper mapper)
     {
         _httpClient = httpClientFactory.CreateClient(Constants.HttpClientNameForSpaceXWebApi);
         _spaceXWebApiOptions = spaceXWebApiOptions.Value;
+        _mapper = mapper;
     }
 
-    public async Task<PastLaunchesDto?> GetPastLaunchchesAsync(CancellationToken cancellationToken = default)
+    public async Task<PastLaunchesDto?> GetPastLaunchchesAsync(ushort offset, ushort limit,CancellationToken cancellationToken = default)
     {
-        GetPastLaunchesRequestModel payload = GetGetPastLaunchchesRequestPayload();
+        GetPastLaunchesRequestModel payload = GetGetPastLaunchchesRequestPayload(offset, limit);
 
         var postResponse = await _httpClient.PostAsJsonAsync(_spaceXWebApiOptions.Launches.PostQueryEndPointUri, payload, cancellationToken);
 
@@ -35,12 +40,17 @@ public sealed class LaunchesService : ILaunchesService
 
         if (string.IsNullOrWhiteSpace(postResponseAsString)) return default;
 
-        PastLaunchesDto? pastLaunchesDto =
-            JsonConvert.DeserializeObject<PastLaunchesDto>(postResponseAsString);
+        GetPastLaunchesResponseModel? pastLaunchesResponseModel =
+            JsonConvert.DeserializeObject<GetPastLaunchesResponseModel>(postResponseAsString);
+
+        if(pastLaunchesResponseModel is null) return default;
+
+        PastLaunchesDto pastLaunchesDto = 
+            _mapper.Map<GetPastLaunchesResponseModel, PastLaunchesDto>(pastLaunchesResponseModel);
 
         return pastLaunchesDto;
 
-        static GetPastLaunchesRequestModel GetGetPastLaunchchesRequestPayload()
+        static GetPastLaunchesRequestModel GetGetPastLaunchchesRequestPayload(ushort offset, ushort limit)
         {
             var defaultSelection = new string[] { "id", "flight_number", "name", "success", "details", "date_utc", "links.patch", "links.webcast" };
             Sort defaultSortingBy = new() { Date_Utc = "desc" };
@@ -48,8 +58,8 @@ public sealed class LaunchesService : ILaunchesService
             {
                 Options = new()
                 {
-                    Offset = 0,
-                    Limit = 10,
+                    Offset = offset,
+                    Limit = limit,
                     Sort = defaultSortingBy,
                     Select = defaultSelection
                 }

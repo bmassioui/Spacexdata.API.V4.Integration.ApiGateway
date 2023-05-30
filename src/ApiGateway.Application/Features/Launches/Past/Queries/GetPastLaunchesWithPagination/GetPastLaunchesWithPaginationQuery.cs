@@ -3,7 +3,7 @@ using MediatR;
 
 namespace ApiGateway.Application.Features.Launches.Past.Queries.GetPastLaunchesWithPagination;
 
-public record class GetPastLaunchesWithPaginationQuery : IRequest<PastLaunchesDto> { }
+public record class GetPastLaunchesWithPaginationQuery(ushort? Offset, ushort? Limit) : IRequest<PastLaunchesDto> { }
 
 public sealed class GetPastLaunchesWithPaginationQueryHandler : IRequestHandler<GetPastLaunchesWithPaginationQuery, PastLaunchesDto>
 {
@@ -13,8 +13,12 @@ public sealed class GetPastLaunchesWithPaginationQueryHandler : IRequestHandler<
 
     public async Task<PastLaunchesDto> Handle(GetPastLaunchesWithPaginationQuery request, CancellationToken cancellationToken)
     {
+        ushort offset = request.Offset ?? default;
+        ushort defaultLimit = 10;
+        ushort limit = request.Limit ?? defaultLimit;
+
         PastLaunchesDto? pastLaunchesDto =
-            await _launchesService.GetPastLaunchchesAsync(cancellationToken);
+            await _launchesService.GetPastLaunchchesAsync(offset, limit, cancellationToken);
 
         return pastLaunchesDto ?? new();
     }

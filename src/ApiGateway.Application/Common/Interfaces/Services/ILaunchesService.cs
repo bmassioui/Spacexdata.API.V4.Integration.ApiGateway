@@ -5,8 +5,10 @@ namespace ApiGateway.Application.Common.Interfaces.Services;
 public interface ILaunchesService
 {
     /// <summary>
-    /// Get past launches - Async
+    /// Past launches sorted and paginated - Async
     /// </summary>
-    /// <returns>Readonly list of past launches</returns>
-    Task<PastLaunchesDto?> GetPastLaunchchesAsync(CancellationToken cancellationToken = default);
+    /// <param name="offset">Skip position</param>
+    /// <param name="limit">Number of items</param>
+    /// <returns>Past launches sorted and paginated</returns
+    Task<PastLaunchesDto?> GetPastLaunchchesAsync(ushort offset, ushort limit, CancellationToken cancellationToken = default);
 }

@@ -12,7 +12,6 @@ public class LaunchesController : ApiControllerBase
     /// </summary>
     /// <param name="offset">Skip position</param>
     /// <param name="limit">Number of items</param>
-    /// <param name="sort">Sort by (by default date_utc DESC)</param>
     /// <returns>Past launches sorted and paginated</returns>
     /// <response code="200">Query has been performed successfully</response>
     /// <response code="400">Invalid request parameters</response>
@@ -20,8 +19,8 @@ public class LaunchesController : ApiControllerBase
     [OutputCache]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<PastLaunchesDto>> GetPastLaunches([Required]ushort offset, [Required]ushort limit, string? sort) =>
-        Ok(await Mediator.Send(new GetPastLaunchesWithPaginationQuery()));
+    public async Task<ActionResult<PastLaunchesDto>> GetPastLaunches(ushort? offset, ushort? limit) =>
+        Ok(await Mediator.Send(new GetPastLaunchesWithPaginationQuery(offset, limit)));
 
     /// <summary>
     /// Past launch by id
