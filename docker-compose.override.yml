@@ -43,6 +43,8 @@ services:
       - "WebApiCorsConfig:PolicyName=_SpacexdataApiIntegrationApiGatewayAllowSpecificOriginsPolicyName"
       - "FrontendApp:FrontendWebBaseUrl="
       - "SpaceXWebApi:BaseUrl=https://api.spacexdata.com/v4/"
+      - "SpaceXWebApi:Launches:PostQueryEndPointUri=launches/query"
+      - "SpaceXWebApi:Launches:GetByIdEndPointUri=launches"
       - "JwtToken:secret=35788035eb4909d2439fca6a85632a62f6c4ac4f9825d1ca0ebd4ea3e8506eb9"
       - "JwtToken:issuer=https://massioui.vercel.app/"
       - "JwtToken:audience=Bouchaib MASSIOUI"
