@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Polly.Extensions.Http;
 using Polly;
 using System.Diagnostics.CodeAnalysis;
+using ApiGateway.Application.Common.Interfaces.Services;
+using ApiGateway.Infrastructure.ExternalResources.Services;
 
 namespace ApiGateway.Infrastructure;
 
@@ -24,6 +26,8 @@ public static class ConfigureServices
             })
         .AddPolicyHandler(GetRetryPolicy())
         .AddPolicyHandler(GetCircuitBreakerPolicy());
+
+        services.AddTransient<ILaunchesService, LaunchesService>();
 
         return services;
     }
