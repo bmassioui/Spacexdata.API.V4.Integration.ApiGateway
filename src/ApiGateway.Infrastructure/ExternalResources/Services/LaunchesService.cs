@@ -1,10 +1,11 @@
 ﻿using ApiGateway.Application.Common.Interfaces.Services;
 using ApiGateway.Application.Features.Launches.Past.Queries.GetPastLaunchesWithPagination;
-using ApiGateway.Application.Options;
 using ApiGateway.Infrastructure.Common;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
 using Newtonsoft.Json;
+using ApiGateway.Infrastructure.ExternalResources.Models;
+using ApiGateway.Infrastructure.Options;
 
 namespace ApiGateway.Infrastructure.ExternalResources.Services;
 
@@ -22,16 +23,7 @@ public sealed class LaunchesService : ILaunchesService
 
     public async Task<PastLaunchesDto?> GetPastLaunchchesAsync(CancellationToken cancellationToken = default)
     {
-        var payload = new Rootobject
-        {
-            options = new Options
-            {
-                offset = 0,
-                limit = 10,
-                sort = new Sort { date_utc = "desc" },
-                select = new string[] { "id", "flight_number", "name", "success", "details", "date_utc", "links.patch", "links.webcast" }
-            }
-        };
+        GetPastLaunchesRequestModel payload = GetGetPastLaunchchesRequestPayload();
 
         var postResponse = await _httpClient.PostAsJsonAsync(_spaceXWebApiOptions.Launches.PostQueryEndPointUri, payload, cancellationToken);
 
@@ -47,23 +39,23 @@ public sealed class LaunchesService : ILaunchesService
             JsonConvert.DeserializeObject<PastLaunchesDto>(postResponseAsString);
 
         return pastLaunchesDto;
+
+        static GetPastLaunchesRequestModel GetGetPastLaunchchesRequestPayload()
+        {
+            var defaultSelection = new string[] { "id", "flight_number", "name", "success", "details", "date_utc", "links.patch", "links.webcast" };
+            Sort defaultSortingBy = new() { Date_Utc = "desc" };
+            GetPastLaunchesRequestModel payload = new()
+            {
+                Options = new()
+                {
+                    Offset = 0,
+                    Limit = 10,
+                    Sort = defaultSortingBy,
+                    Select = defaultSelection
+                }
+            };
+
+            return payload;
+        }
     }
-}
-
-public class Rootobject
-{
-    public Options options { get; set; }
-}
-
-public class Options
-{
-    public int offset { get; set; }
-    public int limit { get; set; }
-    public Sort sort { get; set; }
-    public string[] select { get; set; }
-}
-
-public class Sort
-{
-    public string date_utc { get; set; }
 }
