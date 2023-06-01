@@ -8,6 +8,7 @@ namespace ApiGateway.WebApi.Controllers;
 [ApiController]
 [Route("api/v{version:apiVersion}/[controller]")]
 [Produces("application/json")]
+[Consumes("application/json")]
 [ApiVersion(Constants.ApiVersion)]
 [EnableRateLimiting(Constants.FixedWindowLimiterPolicyName)]
 [ApiExceptionFilter]

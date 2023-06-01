@@ -18,7 +18,7 @@ public sealed class GetPastLaunchesWithPaginationQueryHandler : IRequestHandler<
         ushort limit = request.Limit ?? defaultLimit;
 
         PastLaunchesDto? pastLaunchesDto =
-            await _launchesService.GetPastLaunchchesAsync(offset, limit, cancellationToken);
+            await _launchesService.GetPastLaunchesAsync(offset, limit, cancellationToken);
 
         return pastLaunchesDto ?? new();
     }
