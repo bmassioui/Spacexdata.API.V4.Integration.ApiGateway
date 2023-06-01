@@ -1,5 +1,6 @@
 ﻿using ApiGateway.Application.Common.Interfaces.Services;
 using ApiGateway.Application.Features.Launches.Past.Queries.GetPastLaunchesWithPagination;
+using ApiGateway.Application.Features.Launches.Upcoming.Queries.GetUpcomingLaunchesWithPagination;
 using ApiGateway.Infrastructure.Common;
 using ApiGateway.Infrastructure.ExternalResources.Models;
 using ApiGateway.Infrastructure.Options;
@@ -53,7 +54,7 @@ public sealed class LaunchesService : ILaunchesService
         static GetPastLaunchesRequestModel GetGetPastLaunchchesRequestPayload(ushort offset, ushort limit)
         {
             var defaultSelection = new string[] { "id", "flight_number", "name", "success", "details", "date_utc", "links.patch", "links.webcast" };
-            Sort defaultSortingBy = new() { Date_Utc = "desc" };
+            PastLaunchesRequestOptionsSortWrapper defaultSortingBy = new() { Date_Utc = "desc" };
             GetPastLaunchesRequestModel payload = new()
             {
                 Options = new()
@@ -68,4 +69,49 @@ public sealed class LaunchesService : ILaunchesService
             return payload;
         }
     }
+
+    public async Task<UpcomingLaunchesDto?> GetUpcomingLaunchchesAsync(ushort offset, ushort limit, CancellationToken cancellationToken = default)
+    {
+        GetUpcomingLaunchesRequestModel payload = GetGetUpcomingLaunchchesRequestPayload(offset, limit);
+
+        var postResponse = await _httpClient.PostAsJsonAsync(_spaceXWebApiOptions.Launches.PostQueryEndPointUri, payload, cancellationToken);
+
+        if (postResponse is null) return default;
+
+        if (!postResponse.IsSuccessStatusCode) postResponse.EnsureSuccessStatusCode();
+
+        string? postResponseAsString = await postResponse.Content.ReadAsStringAsync();
+
+        if (string.IsNullOrWhiteSpace(postResponseAsString)) return default;
+
+        GetUpcomingLaunchesResponseModel? upcomingLaunchesResponseModel =
+            JsonConvert.DeserializeObject<GetUpcomingLaunchesResponseModel>(postResponseAsString);
+
+        if (upcomingLaunchesResponseModel is null) return default;
+
+        UpcomingLaunchesDto upcomingLaunchesDto =
+            _mapper.Map<GetUpcomingLaunchesResponseModel, UpcomingLaunchesDto>(upcomingLaunchesResponseModel);
+
+        return upcomingLaunchesDto;
+
+        static GetUpcomingLaunchesRequestModel GetGetUpcomingLaunchchesRequestPayload(ushort offset, ushort limit)
+        {
+            var defaultSelection = new string[] { "id", "flight_number", "name", "success", "details", "date_utc", "links.patch", "links.webcast" };
+            UpcomingLaunchesRequestOptionsSortWrapper defaultSortingBy = new() { Date_Utc = "desc" };
+            GetUpcomingLaunchesRequestModel payload = new()
+            {
+                Options = new()
+                {
+                    Offset = offset,
+                    Limit = limit,
+                    Sort = defaultSortingBy,
+                    Select = defaultSelection
+                }
+            };
+
+            return payload;
+        }
+    }
+
 }
+

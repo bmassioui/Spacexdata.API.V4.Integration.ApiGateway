@@ -16,7 +16,6 @@
   <ItemGroup>
     <Folder Include="Features\Launches\Past\Queries\GetPastLaunchById\" />
     <Folder Include="Features\Launches\Upcoming\Queries\GetUpcomingLaunchById\" />
-    <Folder Include="Features\Launches\Upcoming\Queries\GetUpcomingLaunchesWithPagination\" />
   </ItemGroup>
 
 </Project>
