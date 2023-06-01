@@ -3,6 +3,15 @@
 public class UpcomingLaunchesDto
 {
     public UpcomingLaunch[] UpcomingLaunches { get; set; } = Array.Empty<UpcomingLaunch>();
+    public uint TotalUpcomingLaunches { get; set; }
+    public uint Offset { get; set; }
+    public uint Limit { get; set; }
+    public uint TotalPages { get; set; }
+    public uint PagingCounter { get; set; }
+    public bool HasPrevPage { get; set; }
+    public bool HasNextPage { get; set; }
+    public uint? PrevPage { get; set; }
+    public uint? NextPage { get; set; }
 }
 
 public class UpcomingLaunch

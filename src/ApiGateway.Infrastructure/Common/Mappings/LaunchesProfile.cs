@@ -1,6 +1,6 @@
 ﻿using ApiGateway.Application.Features.Launches.Past.Queries.GetPastLaunchesWithPagination;
 using ApiGateway.Application.Features.Launches.Upcoming.Queries.GetUpcomingLaunchesWithPagination;
-using ApiGateway.Infrastructure.ExternalResources.Models;
+using ApiGateway.Infrastructure.Models;
 using AutoMapper;
 
 namespace ApiGateway.Infrastructure.Common.Mappings;
@@ -16,7 +16,8 @@ public sealed class LaunchesProfile : Profile
     private void MapGetPastLaunchesResponseModelToPastLaunchesDto()
     {
         CreateMap<GetPastLaunchesResponseModel, PastLaunchesDto>()
-        .ForMember(dest => dest.PastLaunches, opt => opt.MapFrom(src => src.Docs));
+        .ForMember(dest => dest.PastLaunches, opt => opt.MapFrom(src => src.Docs))
+        .ForMember(dest => dest.TotalPastLaunches, opt => opt.MapFrom(src => src.TotalDocs));
 
         CreateMap<PastLaunchesResponseWrapper, PastLaunch>()
             .ForMember(dest => dest.Links, opt => opt.MapFrom(src => src.Links))
@@ -34,7 +35,8 @@ public sealed class LaunchesProfile : Profile
     private void MapGetUpcomingLaunchesResponseModelToUpcomingLaunchesDto()
     {
         CreateMap<GetUpcomingLaunchesResponseModel, UpcomingLaunchesDto>()
-        .ForMember(dest => dest.UpcomingLaunches, opt => opt.MapFrom(src => src.Docs));
+        .ForMember(dest => dest.UpcomingLaunches, opt => opt.MapFrom(src => src.Docs))
+        .ForMember(dest => dest.TotalUpcomingLaunches, opt => opt.MapFrom(src => src.TotalDocs));
 
         CreateMap<UpcomingLaunchesResponseWrapper, UpcomingLaunch>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))

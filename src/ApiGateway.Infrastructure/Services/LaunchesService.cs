@@ -2,14 +2,14 @@
 using ApiGateway.Application.Features.Launches.Past.Queries.GetPastLaunchesWithPagination;
 using ApiGateway.Application.Features.Launches.Upcoming.Queries.GetUpcomingLaunchesWithPagination;
 using ApiGateway.Infrastructure.Common;
-using ApiGateway.Infrastructure.ExternalResources.Models;
+using ApiGateway.Infrastructure.Models;
 using ApiGateway.Infrastructure.Options;
 using AutoMapper;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
 
-namespace ApiGateway.Infrastructure.ExternalResources.Services;
+namespace ApiGateway.Infrastructure.Services;
 
 public sealed class LaunchesService : ILaunchesService
 {
@@ -18,8 +18,8 @@ public sealed class LaunchesService : ILaunchesService
     private readonly IMapper _mapper;
 
     public LaunchesService(
-        IHttpClientFactory httpClientFactory, 
-        IOptions<SpaceXWebApiOptions> spaceXWebApiOptions, 
+        IHttpClientFactory httpClientFactory,
+        IOptions<SpaceXWebApiOptions> spaceXWebApiOptions,
         IMapper mapper)
     {
         _httpClient = httpClientFactory.CreateClient(Constants.HttpClientNameForSpaceXWebApi);
@@ -27,7 +27,7 @@ public sealed class LaunchesService : ILaunchesService
         _mapper = mapper;
     }
 
-    public async Task<PastLaunchesDto?> GetPastLaunchchesAsync(ushort offset, ushort limit,CancellationToken cancellationToken = default)
+    public async Task<PastLaunchesDto?> GetPastLaunchchesAsync(ushort offset, ushort limit, CancellationToken cancellationToken = default)
     {
         GetPastLaunchesRequestModel payload = GetGetPastLaunchchesRequestPayload(offset, limit);
 
@@ -44,9 +44,9 @@ public sealed class LaunchesService : ILaunchesService
         GetPastLaunchesResponseModel? pastLaunchesResponseModel =
             JsonConvert.DeserializeObject<GetPastLaunchesResponseModel>(postResponseAsString);
 
-        if(pastLaunchesResponseModel is null) return default;
+        if (pastLaunchesResponseModel is null) return default;
 
-        PastLaunchesDto pastLaunchesDto = 
+        PastLaunchesDto pastLaunchesDto =
             _mapper.Map<GetPastLaunchesResponseModel, PastLaunchesDto>(pastLaunchesResponseModel);
 
         return pastLaunchesDto;
@@ -54,7 +54,7 @@ public sealed class LaunchesService : ILaunchesService
         static GetPastLaunchesRequestModel GetGetPastLaunchchesRequestPayload(ushort offset, ushort limit)
         {
             var defaultSelection = new string[] { "id", "flight_number", "name", "success", "details", "date_utc", "links.patch", "links.webcast" };
-            PastLaunchesRequestOptionsSortWrapper defaultSortingBy = new() { Date_Utc = "desc" };
+            PastLaunchesRequestSortOptions defaultSortingBy = new() { Date_Utc = "desc" };
             GetPastLaunchesRequestModel payload = new()
             {
                 Options = new()
@@ -97,7 +97,7 @@ public sealed class LaunchesService : ILaunchesService
         static GetUpcomingLaunchesRequestModel GetGetUpcomingLaunchchesRequestPayload(ushort offset, ushort limit)
         {
             var defaultSelection = new string[] { "id", "flight_number", "name", "success", "details", "date_utc", "links.patch", "links.webcast" };
-            UpcomingLaunchesRequestOptionsSortWrapper defaultSortingBy = new() { Date_Utc = "desc" };
+            UpcomingLaunchesRequestSortOptions defaultSortingBy = new() { Date_Utc = "desc" };
             GetUpcomingLaunchesRequestModel payload = new()
             {
                 Options = new()
