@@ -1,6 +1,7 @@
 ﻿using ApiGateway.Application.Common.Interfaces.Services;
 using ApiGateway.Application.Features.Launches.Past.Queries.GetPastLaunchById;
 using ApiGateway.Application.Features.Launches.Past.Queries.GetPastLaunchesWithPagination;
+using ApiGateway.Application.Features.Launches.Upcoming.Queries.GetUpcomingLaunchById;
 using ApiGateway.Application.Features.Launches.Upcoming.Queries.GetUpcomingLaunchesWithPagination;
 using ApiGateway.Infrastructure.Common;
 using ApiGateway.Infrastructure.Models;
@@ -101,7 +102,6 @@ public sealed class LaunchesService : ILaunchesService
         return pastLaunchDto;
     }
 
-
     public async Task<UpcomingLaunchesDto?> GetUpcomingLaunchesAsync(ushort offset, ushort limit, CancellationToken cancellationToken = default)
     {
         GetUpcomingLaunchesRequestModel payload = GetGetUpcomingLaunchchesRequestPayload(offset, limit);
@@ -129,7 +129,7 @@ public sealed class LaunchesService : ILaunchesService
         static GetUpcomingLaunchesRequestModel GetGetUpcomingLaunchchesRequestPayload(ushort offset, ushort limit)
         {
             var defaultSelection = new string[] { "id", "flight_number", "name", "success", "details", "date_utc", "links.patch", "links.webcast" };
-            UpcomingLaunchesRequestSortOptions defaultSortingBy = new() { Date_Utc = "desc" };
+            UpcomingLaunchesRequestSort defaultSortingBy = new() { Date_Utc = "desc" };
             GetUpcomingLaunchesRequestModel payload = new()
             {
                 Options = new()
@@ -145,5 +145,30 @@ public sealed class LaunchesService : ILaunchesService
         }
     }
 
+    public async Task<UpcomingLaunchByIdDto?> GetUpcomingLaunchByIdAsync(string id, CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(nameof(id));
+
+        var getByIdRequestUri = $"{_spaceXWebApiOptions.Launches.GetByIdEndPointUri}/{id}";
+        var getResponse = await _httpClient.GetAsync(getByIdRequestUri, cancellationToken);
+
+        if (getResponse is null) return default;
+
+        if (!getResponse.IsSuccessStatusCode) getResponse.EnsureSuccessStatusCode();
+
+        string? getResponseAsString = await getResponse.Content.ReadAsStringAsync(cancellationToken);
+
+        if (string.IsNullOrWhiteSpace(getResponseAsString)) return default;
+
+        GetUpcomingLaunchResponseModel? upcomingLaunchResponseModel =
+           JsonConvert.DeserializeObject<GetUpcomingLaunchResponseModel>(getResponseAsString);
+
+        if (upcomingLaunchResponseModel is null) return default;
+
+        UpcomingLaunchByIdDto upcomingLaunchDto =
+            _mapper.Map<GetUpcomingLaunchResponseModel, UpcomingLaunchByIdDto>(upcomingLaunchResponseModel);
+
+        return upcomingLaunchDto;
+    }
 }
 

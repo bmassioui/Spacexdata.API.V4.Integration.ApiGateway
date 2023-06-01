@@ -1,6 +1,6 @@
 ﻿namespace ApiGateway.Application.Features.Launches.Past.Queries.GetPastLaunchesWithPagination;
 
-public class PastLaunchesDto
+public sealed record PastLaunchesDto
 {
     public PastLaunch[] PastLaunches { get; set; } = Array.Empty<PastLaunch>();
     public uint TotalPastLaunches { get; set; }
@@ -14,7 +14,7 @@ public class PastLaunchesDto
     public uint? NextPage { get; set; }
 }
 
-public class PastLaunch
+public sealed record PastLaunch
 {
     public string Id { get; set; } = null!;
     public PastLaunchMedias? Links { get; set; }
@@ -25,7 +25,7 @@ public class PastLaunch
     public DateTime? LaunchedAtUtc { get; set; }
 }
 
-public class PastLaunchMedias
+public sealed record PastLaunchMedias
 {
     public string? SmallImage { get; set; }
     public string? LargeImage { get; set; }

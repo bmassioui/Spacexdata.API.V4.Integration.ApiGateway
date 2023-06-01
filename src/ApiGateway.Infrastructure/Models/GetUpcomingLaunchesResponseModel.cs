@@ -14,7 +14,7 @@ public sealed class GetUpcomingLaunchesResponseModel
     public uint? NextPage { get; set; }
 }
 
-public class UpcomingLaunchesResponse
+public sealed record UpcomingLaunchesResponse
 {
     public int Flight_number { get; set; }
     public string Name { get; set; } = null!;

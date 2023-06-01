@@ -1,6 +1,6 @@
 ﻿namespace ApiGateway.Application.Features.Launches.Upcoming.Queries.GetUpcomingLaunchesWithPagination;
 
-public class UpcomingLaunchesDto
+public sealed record UpcomingLaunchesDto
 {
     public UpcomingLaunch[] UpcomingLaunches { get; set; } = Array.Empty<UpcomingLaunch>();
     public uint TotalUpcomingLaunches { get; set; }
@@ -14,7 +14,7 @@ public class UpcomingLaunchesDto
     public uint? NextPage { get; set; }
 }
 
-public class UpcomingLaunch
+public sealed record UpcomingLaunch
 {
     public string Id { get; set; } = null!;
     public int FlightNumber { get; set; }

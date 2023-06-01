@@ -1,6 +1,6 @@
 ﻿namespace ApiGateway.Infrastructure.Models;
 
-public sealed class GetPastLaunchesResponseModel
+public sealed record GetPastLaunchesResponseModel
 {
     public PastLaunchesResponse[] Docs { get; set; } = null!;
     public uint TotalDocs { get; set; }
@@ -14,7 +14,7 @@ public sealed class GetPastLaunchesResponseModel
     public uint? NextPage { get; set; }
 }
 
-public class PastLaunchesResponse
+public sealed record PastLaunchesResponse
 {
     public PastLaunchesResponseLinks? Links { get; set; }
     public bool? Success { get; set; }
@@ -25,13 +25,13 @@ public class PastLaunchesResponse
     public string Id { get; set; } = null!;
 }
 
-public class PastLaunchesResponseLinks
+public sealed record PastLaunchesResponseLinks
 {
     public PastLaunchesResponseLinksPatch? Patch { get; set; }
     public string? Webcast { get; set; }
 }
 
-public class PastLaunchesResponseLinksPatch
+public sealed record PastLaunchesResponseLinksPatch
 {
     public string? Small { get; set; }
     public string? Large { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace ApiGateway.Infrastructure.Models;
 
-public sealed record GetPastLaunchResponseModel
+public sealed record GetUpcomingLaunchResponseModel
 {
     public int FlightNumber { get; set; }
     public string Name { get; set; } = null!;
@@ -8,17 +8,17 @@ public sealed record GetPastLaunchResponseModel
     public string Rocket { get; set; } = null!;
     public bool? Success { get; set; }
     public string? Details { get; set; }
-    public PastLaunchResponseLinks? Links { get; set; }
+    public UpcomingLaunchResponseLinks? Links { get; set; }
     public bool AutoUpdate { get; set; }
 }
 
-public sealed record PastLaunchResponseLinks
+public sealed record UpcomingLaunchResponseLinks
 {
-    public PastLaunchResponsePatch? Patch { get; set; }
+    public UpcomingLaunchResponsePatch? Patch { get; set; }
     public string? Webcast { get; set; }
 }
 
-public record PastLaunchResponsePatch
+public sealed record UpcomingLaunchResponsePatch
 {
     public string? Small { get; set; }
     public string? Large { get; set; }

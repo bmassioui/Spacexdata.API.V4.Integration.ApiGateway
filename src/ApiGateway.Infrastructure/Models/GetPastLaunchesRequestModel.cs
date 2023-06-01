@@ -6,12 +6,12 @@ public sealed record GetPastLaunchesRequestModel
     public PastLaunchesRequestOptions Options { get; set; } = null!;
 }
 
-public class PastLaunchesRequestQueryOptions
+public sealed record PastLaunchesRequestQueryOptions
 {
     public bool Upcoming { get; set; }
 }
 
-public record PastLaunchesRequestOptions
+public sealed record PastLaunchesRequestOptions
 {
     public int Offset { get; set; }
     public int Limit { get; set; }
@@ -19,7 +19,7 @@ public record PastLaunchesRequestOptions
     public string[] Select { get; set; } = null!;
 }
 
-public record PastLaunchesRequestSortOptions
+public sealed record PastLaunchesRequestSortOptions
 {
     public string Date_Utc { get; set; } = null!;
 }
