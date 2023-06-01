@@ -57,6 +57,10 @@ public sealed class LaunchesService : ILaunchesService
             PastLaunchesRequestSortOptions defaultSortingBy = new() { Date_Utc = "desc" };
             GetPastLaunchesRequestModel payload = new()
             {
+                Query = new()
+                {
+                    Upcoming = false
+                },
                 Options = new()
                 {
                     Offset = offset,
