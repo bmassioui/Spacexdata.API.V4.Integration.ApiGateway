@@ -2,7 +2,7 @@
 
 public sealed class GetPastLaunchesResponseModel
 {
-    public PastLaunchesResponseWrapper[] Docs { get; set; } = null!;
+    public PastLaunchesResponse[] Docs { get; set; } = null!;
     public uint TotalDocs { get; set; }
     public uint Offset { get; set; }
     public uint Limit { get; set; }
@@ -14,9 +14,9 @@ public sealed class GetPastLaunchesResponseModel
     public uint? NextPage { get; set; }
 }
 
-public class PastLaunchesResponseWrapper
+public class PastLaunchesResponse
 {
-    public PastLaunchesResponseLinksWrapper? Links { get; set; }
+    public PastLaunchesResponseLinks? Links { get; set; }
     public bool? Success { get; set; }
     public string? Details { get; set; }
     public int Flight_number { get; set; }
@@ -25,13 +25,13 @@ public class PastLaunchesResponseWrapper
     public string Id { get; set; } = null!;
 }
 
-public class PastLaunchesResponseLinksWrapper
+public class PastLaunchesResponseLinks
 {
-    public PastLaunchesResponseLinksPatchWrapper? Patch { get; set; }
+    public PastLaunchesResponseLinksPatch? Patch { get; set; }
     public string? Webcast { get; set; }
 }
 
-public class PastLaunchesResponseLinksPatchWrapper
+public class PastLaunchesResponseLinksPatch
 {
     public string? Small { get; set; }
     public string? Large { get; set; }

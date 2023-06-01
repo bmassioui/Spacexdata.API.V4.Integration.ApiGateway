@@ -1,4 +1,5 @@
 ﻿using ApiGateway.Application.Common.Interfaces.Services;
+using ApiGateway.Application.Features.Launches.Past.Queries.GetPastLaunchById;
 using ApiGateway.Application.Features.Launches.Past.Queries.GetPastLaunchesWithPagination;
 using ApiGateway.Application.Features.Launches.Upcoming.Queries.GetUpcomingLaunchesWithPagination;
 using ApiGateway.Infrastructure.Common;
@@ -27,7 +28,7 @@ public sealed class LaunchesService : ILaunchesService
         _mapper = mapper;
     }
 
-    public async Task<PastLaunchesDto?> GetPastLaunchchesAsync(ushort offset, ushort limit, CancellationToken cancellationToken = default)
+    public async Task<PastLaunchesDto?> GetPastLaunchesAsync(ushort offset, ushort limit, CancellationToken cancellationToken = default)
     {
         GetPastLaunchesRequestModel payload = GetGetPastLaunchchesRequestPayload(offset, limit);
 
@@ -37,7 +38,7 @@ public sealed class LaunchesService : ILaunchesService
 
         if (!postResponse.IsSuccessStatusCode) postResponse.EnsureSuccessStatusCode();
 
-        string? postResponseAsString = await postResponse.Content.ReadAsStringAsync();
+        string? postResponseAsString = await postResponse.Content.ReadAsStringAsync(cancellationToken);
 
         if (string.IsNullOrWhiteSpace(postResponseAsString)) return default;
 
@@ -74,7 +75,34 @@ public sealed class LaunchesService : ILaunchesService
         }
     }
 
-    public async Task<UpcomingLaunchesDto?> GetUpcomingLaunchchesAsync(ushort offset, ushort limit, CancellationToken cancellationToken = default)
+    public async Task<PastLaunchByIdDto?> GetPastLaunchByIdAsync(string id, CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(nameof(id));
+
+        var getByIdRequestUri = $"{_spaceXWebApiOptions.Launches.GetByIdEndPointUri}/{id}";
+        var getResponse = await _httpClient.GetAsync(getByIdRequestUri, cancellationToken);
+
+        if (getResponse is null) return default;
+
+        if (!getResponse.IsSuccessStatusCode) getResponse.EnsureSuccessStatusCode();
+
+        string? getResponseAsString = await getResponse.Content.ReadAsStringAsync(cancellationToken);
+
+        if (string.IsNullOrWhiteSpace(getResponseAsString)) return default;
+
+        GetPastLaunchResponseModel? pastLaunchResponseModel =
+           JsonConvert.DeserializeObject<GetPastLaunchResponseModel>(getResponseAsString);
+
+        if (pastLaunchResponseModel is null) return default;
+
+        PastLaunchByIdDto pastLaunchDto =
+            _mapper.Map<GetPastLaunchResponseModel, PastLaunchByIdDto>(pastLaunchResponseModel);
+
+        return pastLaunchDto;
+    }
+
+
+    public async Task<UpcomingLaunchesDto?> GetUpcomingLaunchesAsync(ushort offset, ushort limit, CancellationToken cancellationToken = default)
     {
         GetUpcomingLaunchesRequestModel payload = GetGetUpcomingLaunchchesRequestPayload(offset, limit);
 
@@ -84,7 +112,7 @@ public sealed class LaunchesService : ILaunchesService
 
         if (!postResponse.IsSuccessStatusCode) postResponse.EnsureSuccessStatusCode();
 
-        string? postResponseAsString = await postResponse.Content.ReadAsStringAsync();
+        string? postResponseAsString = await postResponse.Content.ReadAsStringAsync(cancellationToken);
 
         if (string.IsNullOrWhiteSpace(postResponseAsString)) return default;
 

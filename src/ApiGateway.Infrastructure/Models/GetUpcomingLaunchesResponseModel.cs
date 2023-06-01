@@ -2,7 +2,7 @@
 
 public sealed class GetUpcomingLaunchesResponseModel
 {
-    public UpcomingLaunchesResponseWrapper[] Docs { get; set; } = null!;
+    public UpcomingLaunchesResponse[] Docs { get; set; } = null!;
     public uint TotalDocs { get; set; }
     public uint Offset { get; set; }
     public uint Limit { get; set; }
@@ -14,7 +14,7 @@ public sealed class GetUpcomingLaunchesResponseModel
     public uint? NextPage { get; set; }
 }
 
-public class UpcomingLaunchesResponseWrapper
+public class UpcomingLaunchesResponse
 {
     public int Flight_number { get; set; }
     public string Name { get; set; } = null!;

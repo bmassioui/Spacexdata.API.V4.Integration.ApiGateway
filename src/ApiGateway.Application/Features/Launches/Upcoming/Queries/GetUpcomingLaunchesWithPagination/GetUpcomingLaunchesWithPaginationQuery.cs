@@ -18,7 +18,7 @@ public sealed class GetUpcomingLaunchesWithPaginationQueryHandler : IRequestHand
         ushort limit = request.Limit ?? defaultLimit;
 
         UpcomingLaunchesDto? upcomingLaunchesDto =
-            await _launchesService.GetUpcomingLaunchchesAsync(offset, limit, cancellationToken);
+            await _launchesService.GetUpcomingLaunchesAsync(offset, limit, cancellationToken);
 
         return upcomingLaunchesDto ?? new();
     }

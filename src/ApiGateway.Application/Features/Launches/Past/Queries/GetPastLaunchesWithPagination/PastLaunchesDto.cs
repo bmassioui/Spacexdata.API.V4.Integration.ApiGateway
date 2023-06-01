@@ -17,7 +17,7 @@ public class PastLaunchesDto
 public class PastLaunch
 {
     public string Id { get; set; } = null!;
-    public Medias? Links { get; set; }
+    public PastLaunchMedias? Links { get; set; }
     public bool? IsSuccess { get; set; }
     public string? Details { get; set; }
     public int FlightNumber { get; set; }
@@ -25,7 +25,7 @@ public class PastLaunch
     public DateTime? LaunchedAtUtc { get; set; }
 }
 
-public class Medias
+public class PastLaunchMedias
 {
     public string? SmallImage { get; set; }
     public string? LargeImage { get; set; }

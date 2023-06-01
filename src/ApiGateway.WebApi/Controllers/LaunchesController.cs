@@ -1,8 +1,10 @@
-﻿using ApiGateway.Application.Features.Launches.Past.Queries.GetPastLaunchesWithPagination;
+﻿using ApiGateway.Application.Features.Launches.Past.Queries.GetPastLaunchById;
+using ApiGateway.Application.Features.Launches.Past.Queries.GetPastLaunchesWithPagination;
 using ApiGateway.Application.Features.Launches.Upcoming.Queries.GetUpcomingLaunchesWithPagination;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ApiGateway.WebApi.Controllers;
@@ -27,13 +29,17 @@ public class LaunchesController : ApiControllerBase
     /// <summary>
     /// Past launch by id
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Past launch if found</returns>
+    /// <response code="200">Query has been performed successfully</response>
+    /// <response code="400">Invalid request parameters</response>
+    /// <response code="400">Past launch not found</response>
     [HttpGet(template: "/past/{id}", Name = "GetPastLaunchById", Order = 1)]
     [OutputCache]
-    public IActionResult GetPastLaunchById([Required] string id)
-    {
-        return Ok();
-    }
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<PastLaunchByIdDto>> GetPastLaunchById([Required] string id) =>
+       Ok(await Mediator.Send(new GetPastLaunchByIdQuery(id)));
 
     /// <summary>
     /// Upcoming launches sorted and paginated
