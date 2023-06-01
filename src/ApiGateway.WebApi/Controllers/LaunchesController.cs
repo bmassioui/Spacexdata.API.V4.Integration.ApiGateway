@@ -2,6 +2,8 @@
 using ApiGateway.Application.Features.Launches.Upcoming.Queries.GetUpcomingLaunchesWithPagination;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
+using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace ApiGateway.WebApi.Controllers;
 
@@ -26,12 +28,12 @@ public class LaunchesController : ApiControllerBase
     /// Past launch by id
     /// </summary>
     /// <returns></returns>
-    //[HttpGet(Name = "/{id:string}", Order = 1)]
-    //[OutputCache]
-    //public IActionResult GetPastLaunchById()
-    //{
-    //    return Ok();
-    //}
+    [HttpGet(template: "/past/{id}", Name = "GetPastLaunchById", Order = 1)]
+    [OutputCache]
+    public IActionResult GetPastLaunchById([Required] string id)
+    {
+        return Ok();
+    }
 
     /// <summary>
     /// Upcoming launches sorted and paginated
@@ -52,10 +54,10 @@ public class LaunchesController : ApiControllerBase
     /// Upcoming launch by id
     /// </summary>
     /// <returns></returns>
-    //[HttpGet(Name = "/Upcoming/{id:string}", Order = 3)]
-    //[OutputCache]
-    //public IActionResult GetUpcomingLaunchesById()
-    //{
-    //    return Ok();
-    //}
+    [HttpGet(template: "/upcoming/{id}", Name = "GetUpcomingLaunchesById", Order = 3)]
+    [OutputCache]
+    public IActionResult GetUpcomingLaunchesById([Required] string id)
+    {
+        return Ok();
+    }
 }
