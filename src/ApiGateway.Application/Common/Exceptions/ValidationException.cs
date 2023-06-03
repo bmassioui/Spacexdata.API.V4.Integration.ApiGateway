@@ -2,6 +2,7 @@
 
 namespace ApiGateway.Application.Common.Exceptions;
 
+[Serializable]
 public class ValidationException : Exception
 {
     public ValidationException()
