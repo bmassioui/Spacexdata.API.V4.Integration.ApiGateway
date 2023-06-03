@@ -1,5 +1,6 @@
 using FluentAssertions;
 using System.Reflection;
+using Xunit;
 
 namespace ApiGateway.ArchitectureTests;
 
