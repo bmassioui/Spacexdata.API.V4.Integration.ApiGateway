@@ -74,9 +74,6 @@ public class LaunchesServiceUnitTests
         ushort offset = 0;
         ushort limit = 10;
 
-        GetPastLaunchesResponseModel fakeData = GetFakePastLaunches();
-        fakeData.Docs = fakeData.Docs[offset..limit];
-
         _httpMessageHandlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
@@ -96,6 +93,31 @@ public class LaunchesServiceUnitTests
         //// Assert
         Assert.Null(result);
     }
+
+    [Fact]
+    public async Task GetPastLaunchesAsyncShouldThrowHttpRequestExceptionWhenResponseStatusIsNotOk()
+    {
+        // Arrange
+        ushort offset = 0;
+        ushort limit = 10;
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.BadGateway,
+            });
+
+        var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+        _httpClientFactoryMock.Setup(x => x.CreateClient(Constants.HttpClientNameForSpaceXWebApi)).Returns(httpClient);
+
+        var launchesService = new LaunchesService(_httpClientFactoryMock.Object, _optionsMock.Object, _mapper);
+
+        //// Assert
+        await Assert.ThrowsAsync<HttpRequestException>(async () => await launchesService.GetPastLaunchesAsync(offset, limit));
+    }
+
 
     private static GetPastLaunchesResponseModel GetFakePastLaunches()
     {
