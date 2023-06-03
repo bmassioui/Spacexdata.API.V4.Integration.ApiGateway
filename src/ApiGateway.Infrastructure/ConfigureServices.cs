@@ -1,15 +1,14 @@
 ﻿using ApiGateway.Application.Common.Interfaces.Services;
 using ApiGateway.Infrastructure.Common;
 using ApiGateway.Infrastructure.Options;
+using ApiGateway.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Extensions.Http;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
-using AutoMapper;
 using System.Reflection;
-using ApiGateway.Infrastructure.Services;
 
 namespace ApiGateway.Infrastructure;
 
