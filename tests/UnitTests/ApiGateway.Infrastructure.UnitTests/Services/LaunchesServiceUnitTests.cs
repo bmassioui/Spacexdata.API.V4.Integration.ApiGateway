@@ -24,19 +24,22 @@ public class LaunchesServiceUnitTests
 
     public LaunchesServiceUnitTests()
     {
+        // Initialization
         _httpClientFactoryMock = new Mock<IHttpClientFactory>();
         _httpMessageHandlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
         _optionsMock = new Mock<IOptions<SpaceXWebApiOptions>>();
         _mapper = ConfigureAutoMapper().CreateMapper();
+
+        // Setup
+        _optionsMock.Setup(x => x.Value).Returns(new SpaceXWebApiOptions { Launches = new LaunchesOptions { PostQueryEndPointUri = "https://example.com/v4/api/launches" } });
     }
 
     [Fact]
-    public async Task GetPastLaunchesAsyncReturnsPastLaunchesDto()
+    public async Task GetPastLaunchesAsyncShouldReturnPastLaunchesDto()
     {
         // Arrange
         ushort offset = 0;
         ushort limit = 10;
-        string getPastLaunchesEndPointUri = "https://example.com/v4/api/launches";
 
         GetPastLaunchesResponseModel fakeData = GetFakePastLaunches();
         fakeData.Docs = fakeData.Docs[offset..limit];
@@ -53,7 +56,6 @@ public class LaunchesServiceUnitTests
 
         var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
         _httpClientFactoryMock.Setup(x => x.CreateClient(Constants.HttpClientNameForSpaceXWebApi)).Returns(httpClient);
-        _optionsMock.Setup(x => x.Value).Returns(new SpaceXWebApiOptions { Launches = new LaunchesOptions { PostQueryEndPointUri = getPastLaunchesEndPointUri } });
 
         var launchesService = new LaunchesService(_httpClientFactoryMock.Object, _optionsMock.Object, _mapper);
 
@@ -63,6 +65,36 @@ public class LaunchesServiceUnitTests
         //// Assert
         Assert.NotNull(result);
         Assert.True(result.PastLaunches.Length == limit);
+    }
+
+    [Fact]
+    public async Task GetPastLaunchesAsyncShouldReturnNullWhenReponseContentIsNullOrEmpty()
+    {
+        // Arrange
+        ushort offset = 0;
+        ushort limit = 10;
+
+        GetPastLaunchesResponseModel fakeData = GetFakePastLaunches();
+        fakeData.Docs = fakeData.Docs[offset..limit];
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+            });
+
+        var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+        _httpClientFactoryMock.Setup(x => x.CreateClient(Constants.HttpClientNameForSpaceXWebApi)).Returns(httpClient);
+
+        var launchesService = new LaunchesService(_httpClientFactoryMock.Object, _optionsMock.Object, _mapper);
+
+        //// Act
+        var result = await launchesService.GetPastLaunchesAsync(offset, limit);
+
+        //// Assert
+        Assert.Null(result);
     }
 
     private static GetPastLaunchesResponseModel GetFakePastLaunches()
