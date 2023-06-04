@@ -150,6 +150,122 @@ public class LaunchesServiceUnitTests
     }
     #endregion GetPastLaunchesAsync
 
+    #region GetUpcomingLaunchesAsync
+    [Fact]
+    public async Task GetUpcomingLaunchesAsyncShouldReturnPastLaunchesDto()
+    {
+        // Arrange
+        ushort offset = 0;
+        ushort limit = 5;
+
+        GetUpcomingLaunchesResponseModel fakeData = GetFakeUpcomingLaunches();
+        fakeData.Docs = fakeData.Docs[offset..limit];
+
+        string postRequestExpectedResponse = JsonConvert.SerializeObject(fakeData, Formatting.Indented);
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(postRequestExpectedResponse)
+            });
+
+        var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+        _httpClientFactoryMock.Setup(x => x.CreateClient(Constants.HttpClientNameForSpaceXWebApi)).Returns(httpClient);
+
+        var launchesService = new LaunchesService(_httpClientFactoryMock.Object, _optionsMock.Object, _mapper);
+
+        // Act
+        var result = await launchesService.GetUpcomingLaunchesAsync(offset, limit);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.True(result.UpcomingLaunches.Length == limit);
+    }
+
+    [Fact]
+    public async Task GetUpcomingLaunchesAsyncShouldReturnNullWhenReponseContentIsNullOrEmpty()
+    {
+        // Arrange
+        ushort offset = 0;
+        ushort limit = 5;
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+            });
+
+        var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+        _httpClientFactoryMock.Setup(x => x.CreateClient(Constants.HttpClientNameForSpaceXWebApi)).Returns(httpClient);
+
+        var launchesService = new LaunchesService(_httpClientFactoryMock.Object, _optionsMock.Object, _mapper);
+
+        // Act
+        var result = await launchesService.GetUpcomingLaunchesAsync(offset, limit);
+
+        // Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task GetUpcomingLaunchesAsyncShouldThrowHttpRequestExceptionWhenResponseStatusIsNotOk()
+    {
+        // Arrange
+        ushort offset = 0;
+        ushort limit = 10;
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.BadGateway,
+            });
+
+        var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+        _httpClientFactoryMock.Setup(x => x.CreateClient(Constants.HttpClientNameForSpaceXWebApi)).Returns(httpClient);
+
+        var launchesService = new LaunchesService(_httpClientFactoryMock.Object, _optionsMock.Object, _mapper);
+
+        // Assert
+        await Assert.ThrowsAsync<HttpRequestException>(async () => await launchesService.GetUpcomingLaunchesAsync(offset, limit));
+    }
+
+    [Fact]
+    public async Task GetUpcomingLaunchesAsyncShouldReturnEmptyWhenTheResponseIsInvalid()
+    {
+        // Arrange
+        ushort offset = 0;
+        ushort limit = 10;
+
+        var jsonPayload = "{\"name\": \"John\", \"order\": \"asc\"}";
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(jsonPayload)
+            });
+
+        var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+        _httpClientFactoryMock.Setup(x => x.CreateClient(Constants.HttpClientNameForSpaceXWebApi)).Returns(httpClient);
+
+        var launchesService = new LaunchesService(_httpClientFactoryMock.Object, _optionsMock.Object, _mapper);
+
+        // Act
+        var result = await launchesService.GetUpcomingLaunchesAsync(offset, limit);
+
+        // Assert
+        Assert.IsType<UpcomingLaunchesDto>(result);
+        Assert.True(result == new UpcomingLaunchesDto());
+    }
+    #endregion GetUpcomingLaunchesAsync
+
     private static GetPastLaunchesResponseModel GetFakePastLaunches()
     {
         GetPastLaunchesResponseModel fakeData = new()
@@ -404,6 +520,133 @@ public class LaunchesServiceUnitTests
 
         return fakeData;
     }
+
+    private static GetUpcomingLaunchesResponseModel GetFakeUpcomingLaunches()
+    {
+        GetUpcomingLaunchesResponseModel fakeData = new()
+        {
+            Docs = new[]
+            {
+            new UpcomingLaunchesResponse
+            {
+                Flight_number = 1,
+                Name = "Mission 1",
+                Date_utc = DateTime.UtcNow,
+                Id = "12345"
+            },
+            new UpcomingLaunchesResponse
+            {
+                Flight_number = 2,
+                Name = "Mission 2",
+                Date_utc = DateTime.UtcNow,
+                Id = "67892"
+            },
+            new UpcomingLaunchesResponse
+            {
+                Flight_number = 3,
+                Name = "Mission 3",
+                Date_utc = DateTime.UtcNow,
+                Id = "67893"
+            },
+            new UpcomingLaunchesResponse
+            {
+                Flight_number = 4,
+                Name = "Mission 4",
+                Date_utc = DateTime.UtcNow,
+                Id = "67894"
+            },
+            new UpcomingLaunchesResponse
+            {
+                Flight_number = 5,
+                Name = "Mission 5",
+                Date_utc = DateTime.UtcNow,
+                Id = "67895"
+            },
+            new UpcomingLaunchesResponse
+            {
+                Flight_number = 6,
+                Name = "Mission 6",
+                Date_utc = DateTime.UtcNow,
+                Id = "67896"
+            },
+            new UpcomingLaunchesResponse
+            {
+                Flight_number = 7,
+                Name = "Mission 7",
+                Date_utc = DateTime.UtcNow,
+                Id = "67897"
+            },
+            new UpcomingLaunchesResponse
+            {
+                Flight_number = 8,
+                Name = "Mission 8",
+                Date_utc = DateTime.UtcNow,
+                Id = "67898"
+            },
+            new UpcomingLaunchesResponse
+            {
+                Flight_number = 9,
+                Name = "Mission 9",
+                Date_utc = DateTime.UtcNow,
+                Id = "67899"
+            },
+            new UpcomingLaunchesResponse
+            {
+                Flight_number = 10,
+                Name = "Mission 10",
+                Date_utc = DateTime.UtcNow,
+                Id = "67900"
+            },
+            new UpcomingLaunchesResponse
+            {
+                Flight_number = 11,
+                Name = "Mission 11",
+                Date_utc = DateTime.UtcNow,
+                Id = "67901"
+            },
+            new UpcomingLaunchesResponse
+            {
+                Flight_number = 12,
+                Name = "Mission 12",
+                Date_utc = DateTime.UtcNow,
+                Id = "67902"
+            },
+            new UpcomingLaunchesResponse
+            {
+                Flight_number = 13,
+                Name = "Mission 13",
+                Date_utc = DateTime.UtcNow,
+                Id = "67903"
+            },
+            new UpcomingLaunchesResponse
+            {
+                Flight_number = 14,
+                Name = "Mission 14",
+                Date_utc = DateTime.UtcNow,
+                Id = "67904"
+            },
+            new UpcomingLaunchesResponse
+            {
+                Flight_number = 15,
+                Name = "Mission 15",
+                Date_utc = DateTime.UtcNow,
+                Id = "67905"
+            },
+        },
+            TotalDocs = 15,
+            Offset = 0,
+            Limit = 15,
+            TotalPages = 1,
+            PagingCounter = 1,
+            HasPrevPage = false,
+            HasNextPage = false,
+            PrevPage = null,
+            NextPage = null
+        };
+
+        return fakeData;
+    }
+
 
     private static MapperConfiguration ConfigureAutoMapper()
     {
