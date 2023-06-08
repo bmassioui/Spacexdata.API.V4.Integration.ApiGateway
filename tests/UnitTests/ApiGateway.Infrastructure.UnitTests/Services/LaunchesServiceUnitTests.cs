@@ -12,6 +12,7 @@ using Moq;
 using Moq.Protected;
 using Newtonsoft.Json;
 using System.Net;
+using System.Runtime.CompilerServices;
 
 namespace ApiGateway.Infrastructure.UnitTests.Services;
 
@@ -149,6 +150,54 @@ public class LaunchesServiceUnitTests
         Assert.True(result == new PastLaunchesDto());
     }
     #endregion GetPastLaunchesAsync
+
+    #region GetPastLaunchByIdAsync
+    [Fact]
+    public async Task GetPastLaunchByIdAsyncShouldThrowArgmumentNullExceptionWhenIdIsNull()
+    {
+        // Arrange
+        string? pastLaunchId = default;
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+            });
+
+        var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+        _httpClientFactoryMock.Setup(x => x.CreateClient(Constants.HttpClientNameForSpaceXWebApi)).Returns(httpClient);
+
+        var launchesService = new LaunchesService(_httpClientFactoryMock.Object, _optionsMock.Object, _mapper);
+
+        // Assert
+#pragma warning disable CS8604 // Possible null reference argument.
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await launchesService.GetPastLaunchByIdAsync(pastLaunchId));
+#pragma warning restore CS8604 // Possible null reference argument.
+    }
+
+    [Fact]
+    public async Task GetPastLaunchByIdAsyncShouldThrowArgmumentNullExceptionWhenIdIsEmpty()
+    {
+        // Arrange
+        string pastLaunchId = string.Empty;
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+            });
+
+        var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+        _httpClientFactoryMock.Setup(x => x.CreateClient(Constants.HttpClientNameForSpaceXWebApi)).Returns(httpClient);
+
+        var launchesService = new LaunchesService(_httpClientFactoryMock.Object, _optionsMock.Object, _mapper);
+
+        // Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await launchesService.GetPastLaunchByIdAsync(pastLaunchId));
+    }
+    #endregion GetPastLaunchByIdAsync
 
     #region GetUpcomingLaunchesAsync
     [Fact]
@@ -646,7 +695,6 @@ public class LaunchesServiceUnitTests
 
         return fakeData;
     }
-
 
     private static MapperConfiguration ConfigureAutoMapper()
     {
