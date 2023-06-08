@@ -25,6 +25,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ArchitectureTests", "Archit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway.ArchitectureTests", "tests\ArchitectureTests\ApiGateway.ArchitectureTests\ApiGateway.ArchitectureTests.csproj", "{1967A225-2D98-401D-A5EE-4325434DA572}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTests", "IntegrationTests", "{756CE8F7-6ECE-443A-8E63-24473762A5ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway.Application.IntegTests", "tests\IntegrationTests\ApiGateway.Application.IntegTests\ApiGateway.Application.IntegTests.csproj", "{42FBD5E8-D78B-4A6C-BAD8-B6A99B9D3C85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +63,10 @@ Global
 		{1967A225-2D98-401D-A5EE-4325434DA572}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1967A225-2D98-401D-A5EE-4325434DA572}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1967A225-2D98-401D-A5EE-4325434DA572}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42FBD5E8-D78B-4A6C-BAD8-B6A99B9D3C85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42FBD5E8-D78B-4A6C-BAD8-B6A99B9D3C85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42FBD5E8-D78B-4A6C-BAD8-B6A99B9D3C85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42FBD5E8-D78B-4A6C-BAD8-B6A99B9D3C85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -72,6 +80,8 @@ Global
 		{8F8F20DE-0256-47DA-B311-A7EB488749AC} = {2062EE90-69CA-450C-A0C5-9FB6F9BC9D80}
 		{7BFC583C-87FF-45BA-80F9-CCB5E9A42ABF} = {5B33F028-3AF7-4222-AD43-EF0F00514220}
 		{1967A225-2D98-401D-A5EE-4325434DA572} = {7BFC583C-87FF-45BA-80F9-CCB5E9A42ABF}
+		{756CE8F7-6ECE-443A-8E63-24473762A5ED} = {5B33F028-3AF7-4222-AD43-EF0F00514220}
+		{42FBD5E8-D78B-4A6C-BAD8-B6A99B9D3C85} = {756CE8F7-6ECE-443A-8E63-24473762A5ED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E87A9420-23DD-47F9-94B9-EDDAE7C97739}
