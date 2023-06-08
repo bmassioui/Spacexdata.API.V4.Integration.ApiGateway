@@ -32,7 +32,16 @@ public class LaunchesServiceUnitTests
         _mapper = ConfigureAutoMapper().CreateMapper();
 
         // Setup
-        _optionsMock.Setup(x => x.Value).Returns(new SpaceXWebApiOptions { Launches = new LaunchesOptions { PostQueryEndPointUri = "https://example.com/v4/api/launches" } });
+        _optionsMock
+            .Setup(x => x.Value)
+            .Returns(new SpaceXWebApiOptions
+            {
+                Launches = new LaunchesOptions
+                {
+                    PostQueryEndPointUri = "https://example.com/v4/api/launches",
+                    GetByIdEndPointUri = "https://example.com/v4/api/launches"
+                }
+            });
     }
 
     #region GetPastLaunchesAsync
@@ -127,14 +136,14 @@ public class LaunchesServiceUnitTests
         ushort offset = 0;
         ushort limit = 10;
 
-        var jsonPayload = "{\"name\": \"John\", \"order\": \"asc\"}";
+        var stringyfiedJsonResponse = "{\"name\": \"John\", \"order\": \"asc\"}";
         _httpMessageHandlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(jsonPayload)
+                Content = new StringContent(stringyfiedJsonResponse)
             });
 
         var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
@@ -196,6 +205,137 @@ public class LaunchesServiceUnitTests
 
         // Assert
         await Assert.ThrowsAsync<InvalidOperationException>(async () => await launchesService.GetPastLaunchByIdAsync(pastLaunchId));
+    }
+
+    [Fact]
+    public async Task GetPastLaunchByIdAsyncShouldThrowHttpRequestExceptionWhenResponseStatusIsNotOk()
+    {
+        // Arrange
+        string pastLaunchId = Guid.NewGuid().ToString();
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.InternalServerError,
+            });
+
+        var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+        _httpClientFactoryMock.Setup(x => x.CreateClient(Constants.HttpClientNameForSpaceXWebApi)).Returns(httpClient);
+
+        var launchesService = new LaunchesService(_httpClientFactoryMock.Object, _optionsMock.Object, _mapper);
+
+        // Assert
+        await Assert.ThrowsAsync<HttpRequestException>(async () => await launchesService.GetPastLaunchByIdAsync(pastLaunchId));
+    }
+
+    [Fact]
+    public async Task GetPastLaunchByIdAsyncShouldReturnNullWhenReponseContentIsNullOrEmpty()
+    {
+        // Arrange
+        string pastLaunchId = Guid.NewGuid().ToString();
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+            });
+
+        var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+        _httpClientFactoryMock.Setup(x => x.CreateClient(Constants.HttpClientNameForSpaceXWebApi)).Returns(httpClient);
+
+        var launchesService = new LaunchesService(_httpClientFactoryMock.Object, _optionsMock.Object, _mapper);
+
+        // Act
+        var result = await launchesService.GetPastLaunchByIdAsync(pastLaunchId);
+
+        // Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task GetPastLaunchByIdAsyncShouldReturnEmptyWhenTheResponseIsInvalid()
+    {
+        // Arrange
+        string pastLaunchId = Guid.NewGuid().ToString();
+
+        var stringyfiedJsonResponse = "{\"firstname\": \"John\", \"order\": \"asc\"}";
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(stringyfiedJsonResponse)
+            });
+
+        var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+        _httpClientFactoryMock.Setup(x => x.CreateClient(Constants.HttpClientNameForSpaceXWebApi)).Returns(httpClient);
+
+        var launchesService = new LaunchesService(_httpClientFactoryMock.Object, _optionsMock.Object, _mapper);
+
+        // Act
+        var result = await launchesService.GetPastLaunchByIdAsync(pastLaunchId);
+
+        // Assert
+        Assert.IsType<PastLaunchByIdDto>(result);
+        Assert.True(result == new PastLaunchByIdDto());
+    }
+
+    [Fact]
+    public async Task GetPastLaunchByIdAsyncShouldReturnPastLaunchByIdDto()
+    {
+        // Arrange
+
+        GetPastLaunchesResponseModel fakeData = GetFakePastLaunches();
+        fakeData.Docs = fakeData.Docs[..1];
+
+        string pastLaunchId = fakeData.Docs.First().Id;
+
+        string getRequestExpectedResponse = JsonConvert.SerializeObject(fakeData, Formatting.Indented);
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(getRequestExpectedResponse)
+            });
+
+        var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+        _httpClientFactoryMock.Setup(x => x.CreateClient(Constants.HttpClientNameForSpaceXWebApi)).Returns(httpClient);
+
+        var launchesService = new LaunchesService(_httpClientFactoryMock.Object, _optionsMock.Object, _mapper);
+
+        // Act
+        var result = await launchesService.GetPastLaunchByIdAsync(pastLaunchId);
+
+        // Assert
+        Assert.NotNull(result);
+    }
+
+    [Fact]
+    public async Task GetPastLaunchByIdAsyncShouldThrowHttpRequestExceptionWhenNoResourceFoundById()
+    {
+        // Arrange
+        string invalidPastLaunchId = Guid.NewGuid().ToString();
+
+        _httpMessageHandlerMock
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.NotFound,
+            });
+
+        var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
+        _httpClientFactoryMock.Setup(x => x.CreateClient(Constants.HttpClientNameForSpaceXWebApi)).Returns(httpClient);
+
+        var launchesService = new LaunchesService(_httpClientFactoryMock.Object, _optionsMock.Object, _mapper);
+
+        // Assert
+        await Assert.ThrowsAsync<HttpRequestException>(async () => await launchesService.GetPastLaunchByIdAsync(invalidPastLaunchId));
     }
     #endregion GetPastLaunchByIdAsync
 
@@ -291,14 +431,14 @@ public class LaunchesServiceUnitTests
         ushort offset = 0;
         ushort limit = 10;
 
-        var jsonPayload = "{\"name\": \"John\", \"order\": \"asc\"}";
+        var stringyfiedJsonResponse = "{\"name\": \"John\", \"order\": \"asc\"}";
         _httpMessageHandlerMock
             .Protected()
             .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(new HttpResponseMessage
             {
                 StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(jsonPayload)
+                Content = new StringContent(stringyfiedJsonResponse)
             });
 
         var httpClient = new HttpClient(_httpMessageHandlerMock.Object);
