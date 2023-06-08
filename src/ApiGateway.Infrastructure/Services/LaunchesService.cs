@@ -78,7 +78,7 @@ public sealed class LaunchesService : ILaunchesService
 
     public async Task<PastLaunchByIdDto?> GetPastLaunchByIdAsync(string id, CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(nameof(id));
+        ArgumentException.ThrowIfNullOrEmpty(id);
 
         var getByIdRequestUri = $"{_spaceXWebApiOptions.Launches.GetByIdEndPointUri}/{id}";
         var getResponse = await _httpClient.GetAsync(getByIdRequestUri, cancellationToken);
@@ -147,7 +147,7 @@ public sealed class LaunchesService : ILaunchesService
 
     public async Task<UpcomingLaunchByIdDto?> GetUpcomingLaunchByIdAsync(string id, CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(nameof(id));
+        ArgumentException.ThrowIfNullOrEmpty(id);
 
         var getByIdRequestUri = $"{_spaceXWebApiOptions.Launches.GetByIdEndPointUri}/{id}";
         var getResponse = await _httpClient.GetAsync(getByIdRequestUri, cancellationToken);
