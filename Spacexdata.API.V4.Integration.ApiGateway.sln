@@ -23,7 +23,12 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ArchitectureTests", "ArchitectureTests", "{7BFC583C-87FF-45BA-80F9-CCB5E9A42ABF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway.ArchitectureTests", "tests\ArchitectureTests\ApiGateway.ArchitectureTests\ApiGateway.ArchitectureTests.csproj", "{1967A225-2D98-401D-A5EE-4325434DA572}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway.ArchitectureTests", "tests\ArchitectureTests\ApiGateway.ArchitectureTests\ApiGateway.ArchitectureTests.csproj", "{1967A225-2D98-401D-A5EE-4325434DA572}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A29867C1-D055-458C-8A79-F529809667A2}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
