@@ -23,7 +23,7 @@ public sealed record PastLaunch
     public int FlightNumber { get; set; }
     public string Name { get; set; } = null!;
     public DateTime? LaunchedAtUtc { get; set; }
-}
+}   
 
 public sealed record PastLaunchMedias
 {
